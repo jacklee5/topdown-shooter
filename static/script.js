@@ -28,4 +28,7 @@ socket.on("game found", (roomId) => {
 
 //set up the game
 const canvas = document.getElementById("game");
+canvas.style.background = "black";
+canvas.style.height = window.innerHeight;
+canvas.style.width = window.innerWidth;
 const ctx = canvas.getContext("2d");
