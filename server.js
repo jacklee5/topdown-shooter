@@ -3,10 +3,12 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+app.set('view engine', 'ejs');
+
 app.use("/static", express.static("static"));
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + req.baseUrl +  '/views/index.html');
+    res.render('index.ejs');
 });
 
 //load classes
