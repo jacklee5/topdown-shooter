@@ -1,0 +1,17 @@
+body {
+    background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet); 
+}
+
+#title{
+    text-align: center;
+}
+
+#bird_pic{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#login_button{
+    
+}
