@@ -3,13 +3,21 @@
     <head>
         <title>SnekSmash 2</title>
         <meta charset = "utf-8">
+        <link href = "/static/style.css" rel = "stylesheet">
     </head>
     <body>
-        <form id = "join-form">
-            <input id = "username" placeholder = "Enter your name">
-            <button>play</button>
-        </form>
-        <script src = "/socket.io/socket.io.js"></script>
-        <script src = "/static/script.js"></script>
+        <!-- home -->
+        <div class = "page start">
+            <form id = "join-form">
+                <input id = "username" placeholder = "Enter your name">
+                <button>play</button>
+            </form>
+            <script src = "/socket.io/socket.io.js"></script>
+            <script src = "/static/script.js"></script>
+        </div>
+        <!-- game -->
+        <div class = "page">
+            <canvas id = "game"></canvas>
+        </div>
     </body>
 </html>
