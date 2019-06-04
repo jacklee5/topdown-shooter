@@ -15,3 +15,15 @@ body {
 #login_button{
     
 }
+
+body{
+    margin: 0;
+    height: 100vh;
+}
+.page{
+    display: none;
+    height: 100vh;
+}
+.start{
+    display: block;
+}
