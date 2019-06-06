@@ -11,6 +11,17 @@ class Game{
         this.players.push(player);
         player.roomId = this.id;
     }
+    //do some initialization stuff like creating physics bodies
+    start(){
+        
+    }
+    tick(){
+        //move players
+        for(let i = 0; i < players.length; i++){
+            const player = players[i];
+
+        }
+    }
 }
 
 module.exports = Game;

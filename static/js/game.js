@@ -1,3 +1,4 @@
+const CONSTANTS = require("/shared/constants");
 const socket = io();
 
 //page switching stuff
@@ -6,6 +7,7 @@ const PAGES = {
     GAME: 1
 }
 let currentPage = PAGES.HOME;
+let inGame = false;
 const changePage = (id) => {
     const pages = document.getElementsByClassName("page");
     for(let i = 0; i < pages.length; i++){
@@ -16,8 +18,10 @@ const changePage = (id) => {
     //do page-specific things
     if(id === PAGES.GAME){
         document.body.style.overflow = "hidden";
+        inGame = true;
     }else{
         document.body.style.overflow = "auto";
+        inGame = false;
     }
 }
 
@@ -34,6 +38,12 @@ socket.on("game found", (roomId) => {
 });
 
 //set up the game
+const KEYS = {
+    RIGHT: 39,
+    LEFT: 37,
+    UP: 38,
+    DOWN: 40
+}
 const keyStates = {};
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -53,7 +63,7 @@ const drawRect = (x, y, w, h) => {
 }
 const drawCircle = (x, y, r) => {
     ctx.beginPath();
-    ctx.arc(x, y, 15, 0, 2*Math.PI); 
+    ctx.arc(x, y, CONSTANTS.PLAYER_SIZE, 0, 2*Math.PI); 
     ctx.fill();
 }
 //basic functions
@@ -65,32 +75,32 @@ const drawPlayer = (x, y) => {
 let x = 0, y = 0;
 //draw loop
 const draw = () => {
+    if(!inGame) return;
+    console.log("gay")
+
     //handle controls
+    const movement = {};
     if(keyStates[KEYS.UP])
-        y--;
+        movement.up = true;
     if(keyStates[KEYS.DOWN])
-        y++;
+        movement.down = true;
     if(keyStates[KEYS.LEFT])
-        x--;
+        movement.left = true;
     if(keyStates[KEYS.RIGHT])
-        x++;
+        movement.right = true;
 
     //draw background
     fill("green");
     drawRect(0, 0, width, height);
 
-    drawPlayer(x, y);
+    //send data to server
+    socket.emit("movement", movement);
+
     requestAnimationFrame(draw);
 }
 requestAnimationFrame(draw);
 
 //keyboard events
-const KEYS = {
-    RIGHT: 39,
-    LEFT: 37,
-    UP: 38,
-    DOWN: 40
-}
 window.addEventListener("keydown", e => {
     keyStates[e.keyCode] = true;
 });

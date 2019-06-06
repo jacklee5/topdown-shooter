@@ -6,6 +6,7 @@ const io = require('socket.io')(http);
 app.set('view engine', 'ejs');
 
 app.use("/static", express.static("static"));
+app.use("/shared", express.static("shared"));
 
 app.get('/', function (req, res) {
     res.render('index.ejs');
@@ -16,6 +17,7 @@ const Game = require("./server/Game");
 const Player = require("./server/Player");
 
 const games = {};
+const players = {};
 
 //generate random id
 const getId = () => {
@@ -50,9 +52,21 @@ io.on('connection', function (socket) {
             roomId = game.id;
         }
 
+        players[socket.id] = player;
+
         console.log(`[DEBUG] user ${username} in joined room ${roomId}`)
         
         socket.emit("game found", roomId)
+    });
+    socket.on("movement", movement => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.movement = movement;
+    });
+    socket.on("disconnect", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        console.log(`[DEBUG] user ${player.name} disconnected`);
     })
 });
 
