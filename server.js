@@ -9,7 +9,7 @@ app.use("/static", express.static("static"));
 app.use("/shared", express.static("shared"));
 
 app.get('/', function (req, res) {
-    res.render('index.ejs');
+    res.render('LandingPage.ejs');
 });
 
 //load classes
@@ -73,3 +73,4 @@ io.on('connection', function (socket) {
 http.listen(3000, function () {
     console.log('listening on *:3000');
 });
+
