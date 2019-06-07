@@ -1,5 +1,6 @@
 body {
     background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet); 
+    font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 #title{
