@@ -9,7 +9,7 @@ app.use("/static", express.static("static"));
 app.use("/shared", express.static("shared"));
 
 app.get('/', function (req, res) {
-    res.render('LandingPage.ejs');
+    res.render('index.ejs');
 });
 
 //load classes
@@ -35,7 +35,7 @@ const createGame = () => {
 io.on('connection', function (socket) {
     console.log('[DEBUG] a user connected');
     socket.on("new player", (username) => {
-        const player = new Player(username);
+        const player = new Player(username, socket.id);
         let roomId;
 
         for(let i in games){
@@ -55,6 +55,7 @@ io.on('connection', function (socket) {
         players[socket.id] = player;
         socket.join(roomId);
         games[roomId].world.addBody(player.body);
+        player.game = games[roomId];
 
         console.log(`[DEBUG] user ${username} in joined room ${roomId}`)
         
@@ -69,6 +70,7 @@ io.on('connection', function (socket) {
         const player = players[socket.id];
         if(!player) return;
         console.log(`[DEBUG] user ${player.name} disconnected`);
+        player.leaveGame();
     })
 });
 

@@ -1,10 +1,12 @@
 const { PLAYER_SIZE } = require("../shared/constants");
 const p2 = require("p2");
 class Player{
-    constructor(name){
+    constructor(name, id){
         this.name = name;
         this.roomId;
+        this.game;
         this.movementSpeed = 5;
+        this.id = id;
 
         //physics body
         this.body = new p2.Body({
@@ -22,12 +24,24 @@ class Player{
             left: false,
             right: false
         };
+        this.health = 100;
+    }
+    leaveGame(){
+        const game = this.game;
+        const players = game.players;
+        for(let i = 0; i < players.length; i++){
+            if(players[i].id === this.id){
+                return players.splice(i, 1);
+            }
+        }
     }
     toObject(){
         return {
+            health: this.health,
             name: this.name,
             x: this.x,
             y: this.y,
+            id: this.id,
         }
     }
     get x(){

@@ -40,15 +40,17 @@ socket.on("game found", (roomId) => {
 
 //set up the game
 const KEYS = {
-    RIGHT: 39,
-    LEFT: 37,
-    UP: 38,
-    DOWN: 40,
+    UP: 87,
+    LEFT: 65,
+    DOWN: 83,
+    RIGHT: 68
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
+//which player is the user
+let user;
 let height = window.innerHeight;
 let width = window.innerWidth;
 canvas.style.height = height + "px";
@@ -65,16 +67,15 @@ const drawRect = (x, y, w, h) => {
 }
 const drawCircle = (x, y, r) => {
     ctx.beginPath();
-    ctx.arc(x, y, CONSTANTS.PLAYER_SIZE, 0, 2*Math.PI); 
+    ctx.arc(x, y, r, 0, 2*Math.PI); 
     ctx.fill();
 }
 //basic functions
 const drawPlayer = (x, y) => {
     fill("red");
-    drawCircle(x, y, 15);
+    drawCircle(x, y, CONSTANTS.PLAYER_SIZE);
 }
 
-let x = 0, y = 0;
 //draw loop
 const draw = () => {
     if(!inGame) return;
@@ -94,7 +95,13 @@ const draw = () => {
     for(let i = 0; i < players.length; i++){
         const player = players[i];
         drawPlayer(player.x, player.y);
+        if(player.id === socket.id)
+            user = player;
     }
+
+    //draw player health
+    fill("white");
+    drawRect(width / 4, height - 75, width / 2, 50);
 
     //send data to server
     socket.emit("movement", movement);
