@@ -7,6 +7,7 @@ class Player{
         this.game;
         this.movementSpeed = 5;
         this.id = id;
+        this.rotation = 0;
 
         //physics body
         this.body = new p2.Body({
@@ -25,6 +26,7 @@ class Player{
             right: false
         };
         this.health = 100;
+        this.weapon;
     }
     leaveGame(){
         const game = this.game;
@@ -41,7 +43,9 @@ class Player{
             name: this.name,
             x: this.x,
             y: this.y,
+            rotation: this.rotation,
             id: this.id,
+            weapon: this.weapon
         }
     }
     get x(){

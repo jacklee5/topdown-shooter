@@ -80,9 +80,13 @@ const drawCircle = (x, y, r) => {
     ctx.fill();
 }
 //basic functions
-const drawPlayer = (x, y) => {
+const drawPlayer = (x, y, r) => {
     fill("red");
-    drawCircle(x, y, CONSTANTS.PLAYER_SIZE);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(r);
+    drawCircle(0, 0, CONSTANTS.PLAYER_SIZE);
+    ctx.restore();
 }
 
 //draw loop
@@ -100,17 +104,35 @@ const draw = () => {
     fill("green");
     drawRect(0, 0, width, height);
 
-    //draw players
     for(let i = 0; i < players.length; i++){
         const player = players[i];
-        drawPlayer(player.x, player.y);
         if(player.id === socket.id)
             user = player;
     }
 
-    //draw player health
-    fill("white");
-    drawRect(width / 4, height - 75, width / 2, 50);
+    if(user){    
+        //draw players
+        for(let i = 0; i < players.length; i++){
+            const player = players[i];
+            drawPlayer(player.x - user.x + width / 2, player.y - user.y + height / 2, player.rotation);
+            if(player.id === socket.id)
+                user = player;
+        }
+
+        //draw player health
+        //outer thing
+        fill("#E0E0E0");
+        drawRect(width / 2 - 200, height - 75, 400, 40);
+        //inner thing
+        const health = user.health;
+        if(health === 100)
+            fill("#E0E0E0");
+        else if(health > 75)
+            fill("white");
+        else   
+            fill("red");
+        drawRect(width / 2 - 196, height - 71, (health / 100) * 392, 32)
+    }
 
     //send data to server
     socket.emit("movement", movement);
