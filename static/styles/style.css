@@ -1,5 +1,6 @@
 body {
     background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet); 
+    font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 #title{
@@ -10,20 +11,4 @@ body {
     display: block;
     margin-left: auto;
     margin-right: auto;
-}
-
-#login_button{
-    
-}
-
-body{
-    margin: 0;
-    height: 100vh;
-}
-.page{
-    display: none;
-    height: 100vh;
-}
-.start{
-    display: block;
 }
