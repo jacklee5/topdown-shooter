@@ -25,25 +25,16 @@ canvas.height = HEIGHT;
 canvas.width = WIDTH;
 
 const tree = {
-    x: -1,
-    y: -1,
-    health: 175
+    health: 100
 }
 
 const car = {
-    x: -1,
-    y: -1,
     speed: 100
 }
 
 const snake = {
-    x: -1,
-    y: -1,
     health: 25
 }
-
-createMap();
-drawMap();
 
 function createMap() {
     maptype = Math.floor((Math.random() * 4));
