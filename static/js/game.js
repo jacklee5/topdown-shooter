@@ -1,5 +1,7 @@
 const socket = io();
 const CONSTANTS = require("../../shared/constants.js")
+// require("script.js");
+// drawMap();
 
 //page switching stuff
 const PAGES = {
