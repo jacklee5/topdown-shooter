@@ -53,6 +53,8 @@ io.on('connection', function (socket) {
         }
 
         players[socket.id] = player;
+        socket.join(roomId);
+        games[roomId].world.addBody(player.body);
 
         console.log(`[DEBUG] user ${username} in joined room ${roomId}`)
         
@@ -69,6 +71,14 @@ io.on('connection', function (socket) {
         console.log(`[DEBUG] user ${player.name} disconnected`);
     })
 });
+
+//main loop
+setInterval(() => {
+    for(let i in games){
+        games[i].tick();
+        io.in(i).emit("state", games[i].toObject());
+    }
+}, 1 / 60)
 
 http.listen(3000, function () {
     console.log('listening on *:3000');
