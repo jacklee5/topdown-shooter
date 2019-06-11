@@ -419,7 +419,7 @@ function doRect(x,y,dx,dy) {
     console.log(realCoords(y, 1));
     console.log(realCoords(dx, 0));
     console.log(realCoords(dy, 1));
-    ctx.fillRect(realCoords(x, 0) - user.x, realCoords(y, 1) - user.y, realCoords(dx, 0), realCoords(dy, 1));
+    ctx.fillRect(realCoords(x, 0) - user.x + width / 2, realCoords(y, 1) - user.y + height / 2, realCoords(dx, 0), realCoords(dy, 1));
 }
 
 
