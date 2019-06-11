@@ -112,7 +112,7 @@ class Game{
 
     // returns all rectangular areas where players cannot stand. first array is index of rect.
     // second array is info for each rect, 0 and 1 are first coord, 2 and 3 are second coord.
-    function rectBoundaries() {
+    rectBoundaries() {
         if (this.maptype === FORESTID) {
             return [];
         } else if (this.maptype === CITYID) {
@@ -126,7 +126,7 @@ class Game{
 
     // returns all circular areas where players cannot stand. first array is index of tree.
     // second array is info for each tree, 0 is x, 1 is y, 3 is radius.
-    function circleBoundaries() {
+    circleBoundaries() {
         if (this.maptype === FORESTID) {
             circles = [];
             for (var i = 0; i < this.mapobjects.length; i++) {
@@ -149,7 +149,7 @@ class Game{
     // returns all circular areas where players die. first array is index of tree.
     // second array is info for each tree, 0 is x, 1 is y, 3 is radius.
 
-    function rectDeath() {
+    rectDeath() {
         if (this.maptype == FORESTID) {
             return [];
         } else if (this.maptype == CITYID) {
@@ -181,7 +181,7 @@ class Game{
 
     // returns all areas where you don't die in ice map.
     // if empty array, it is not ice map.
-    function circleNotDeath() {
+    circleNotDeath() {
         if (this.maptype == ICEID) {
             return [MAX_X / 2, MAX_Y / 2, MAX_Y / 3];
         }

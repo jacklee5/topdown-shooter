@@ -235,6 +235,12 @@ const drawPlayer = (player) => {
     }
 
     ctx.restore();
+    
+    for(let i = 0; i<players.length; i++){
+        const player = players[i];
+        ctx.font = '48px serif';
+        ctx.fillText(player.name, 10, 50);        
+    }
 }
 
 const drawBullet = (bullet) => {
@@ -260,6 +266,10 @@ const draw = () => {
     movement.down = keyStates[KEYS.DOWN];
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
+    const weapons = {}
+    weapons.fist = keyStates[KEYS.FIST];
+    weapons.pistol = keyStates[KEYS.PISTOL];
+    weapons.ar = keyStates[KEYS.AR];
 
     //player loop thing
     //find out which person is the user
