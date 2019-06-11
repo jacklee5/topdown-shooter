@@ -346,7 +346,7 @@ window.addEventListener("resize", () => {
 });
 
 document.getElementById("respawn-button").addEventListener("click", () => {
-    socket.emit("")
+    socket.emit("respawn");
 })
 
 //listen for state change
