@@ -16,6 +16,25 @@
         <!-- game -->
         <div class = "page">
             <canvas id = "game"></canvas>
+            <div id = "game-info">
+                <header>
+                    <span id = "map-name">Forest</span> - <span id = "game-mode">Deathmath</span>
+                </header>
+                <table>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th span = "score-type">Kills</th>
+                    </tr>
+                    <div id = "ranks">
+                        <tr>
+                            <td>1</td>
+                            <td>Jack</td>
+                            <td>20</td>
+                        </tr>
+                    </div>
+                </table>
+            </div>
         </div>
         <script src = "/socket.io/socket.io.js"></script>
         <script src = "/static/js/bundle.js"></script>

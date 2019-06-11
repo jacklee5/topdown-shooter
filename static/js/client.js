@@ -80,12 +80,7 @@ const KEYS = {
     LEFT: 65,
     DOWN: 83,
     RIGHT: 68,
-    FIST: 49,
-    PISTOL: 50,
-    AR: 51
-
-
-
+    VIEW_STATS: 9
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
@@ -143,6 +138,11 @@ const drawPlayer = (player) => {
         rightY = -CONSTANTS.PLAYER_SIZE - 4;
         leftX = 0;
         leftY = -CONSTANTS.PLAYER_SIZE - 4;
+    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
+        rightX = 0;
+        leftX = 4;
+        rightY = -CONSTANTS.PLAYER_SIZE - 4;
+        leftY = -CONSTANTS.PLAYER_SIZE - 20;
     }
     if(player.animating){
         if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_LEFT){
@@ -163,14 +163,16 @@ const drawPlayer = (player) => {
     //gun
     if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
         fill("black");
-        drawRect(-2, -CONSTANTS.PLAYER_SIZE, 4, -18);
+        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -18);
+    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
+        fill("black")
+        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -32);
     }
 
     ctx.restore();
 }
 
 const drawBullet = (bullet) => {
-    if(!bullet.exists) return;
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
     ctx.save();
@@ -179,6 +181,7 @@ const drawBullet = (bullet) => {
     
     fill("black");
     drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
+
     ctx.restore();
 }
 
@@ -246,9 +249,17 @@ const draw = () => {
 //keyboard events
 window.addEventListener("keydown", e => {
     keyStates[e.keyCode] = true;
+    if(e.keyCode === KEYS.VIEW_STATS){
+        e.preventDefault();
+        document.getElementById("game-info").style.display = "block";
+    }
 });
 window.addEventListener("keyup", e => {
     keyStates[e.keyCode] = false;
+    if(e.keyCode === KEYS.VIEW_STATS){
+        e.preventDefault();
+        document.getElementById("game-info").style.display = "none";
+    }
 });
 window.addEventListener("mousedown", () => {
     socket.emit("fire");
@@ -276,7 +287,7 @@ window.addEventListener("resize", () => {
 socket.on("state", state => {
     players = state.players;
     bullets = state.bullets;
-})
+});
 
 function drawMap() {
     ctx.fillStyle = "#008000";

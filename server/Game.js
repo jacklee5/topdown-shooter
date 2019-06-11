@@ -2,26 +2,20 @@ const MAX_PLAYERS = 20;
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 
-const { MAX_TREES } = require("../shared/constants");
-const { MAX_X } = require("../shared/constants");
-const { MAX_Y } = require("../shared/constants");
-const { FORESTID } = require("../shared/constants");
-const { CITYID } = require("../shared/constants");
-const { ROOFID } = require("../shared/constants");
-const { ICEID } = require("../shared/constants");
-const { HALFROAD } = require("../shared/constants");
-const { TREE } = require("../shared/constants");
-const { CAR } = require("../shared/constants");
-const { SNAKE } = require("../shared/constants");
+const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, TREE, CAR, SNAKE } = require("../shared/constants");
 
 class Game{
-    constructor(id){
+    constructor(id, io){
         this.players = [];
         this.bullets = [];
         this.id = id;
         this.world = new p2.World({
             gravity: [0, 0]
         });
+        this.io = io;
+
+        this.gameType = GAME_MODES.DEATHMATCH;
+
         this.notholes = [];
         this.walls = [];
         this.maptype = 0;
@@ -77,6 +71,14 @@ class Game{
         } else if (this.maptype === ICEID) {
 
         }
+    }
+    updateLeaderboard(){
+        this.io.in(this.id).emit("leaderboard", this.players.map(x => {
+            return {
+                name: x.name,
+                score: x.score
+            }
+        }));
     }
     isJoinable(){
         return this.players.length < MAX_PLAYERS;

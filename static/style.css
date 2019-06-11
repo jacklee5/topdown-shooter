@@ -7,3 +7,12 @@ body{
 .start{
     display: block;
 }
+#game-info{
+    display: none;
+    position: fixed;
+    top: 50vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.8)
+}

@@ -3,8 +3,14 @@ body {
     font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
-#title{
+
+#top_page_text{
     text-align: center;
+}
+
+.name_entry{
+    text-align: center;
+    padding-top: 50px;
 }
 
 #bird_pic{

@@ -23,7 +23,7 @@ const CONSTANTS = {
     HAND_ANGLE: 45 * Math.PI / 180,
     HAND_SIZE: 5,
     FIST_REACH: 15,
-    BULLET_SIZE: 5,
+    BULLET_SIZE: 3,
     //enum for weapons, similar to below
     WEAPONS: {
         FISTS: 0,
@@ -33,14 +33,14 @@ const CONSTANTS = {
         PISTOL: 1,
         1: {
             damage: 15,
-            speed: 3,
+            speed: 5,
             cooldown: 30
         },
         AR: 2,
         2: {
             damage: 12,
             speed: 4,
-            cooldown: 10,
+            cooldown: 45,
             auto: true
         }
     },
@@ -55,5 +55,8 @@ const CONSTANTS = {
             length: 120
         }
     }, 
+    GAME_MODES: {
+        DEATHMATCH: 0
+    }
 }
 module.exports = CONSTANTS;
