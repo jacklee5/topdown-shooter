@@ -36,9 +36,6 @@ const snake = {
     health: 25
 }
 
-createMap();
-drawMap();
-
 function createMap() {
     maptype = Math.floor((Math.random() * 4));
     if (maptype === FORESTID) {

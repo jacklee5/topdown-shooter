@@ -18,6 +18,7 @@ class Game{
     constructor(id, io){
         this.socket = io;
         this.players = [];
+        this.bullets = [];
         this.id = id;
         this.world = new p2.World({
             gravity: [0, 0]
@@ -87,29 +88,21 @@ class Game{
         this.players.push(player);
         player.roomId = this.id;
     }
-    tick(){
-        //move players
-        for(let i = 0; i < this.players.length; i++){
-            const player = this.players[i];
-            let movementSpeed = player.movementSpeed;
-            player.body.velocity = [0, 0];
-            if((player.movement.up || player.movement.down) && (player.movement.left || player.movement.right))
-                movementSpeed *= ROOT2
-            if(player.movement.up)
-                player.body.velocity[1] = -movementSpeed;
-            if(player.movement.down)
-                player.body.velocity[1] = movementSpeed;
-            if(player.movement.left)
-                player.body.velocity[0] = -movementSpeed;
-            if(player.movement.right)
-                player.body.velocity[0] = movementSpeed;
-        }
-        this.world.step(1 / 60);
+    tick(io){
+        //update players
+        for(let i = 0; i < this.players.length; i++)
+            this.players[i].update();
         
+        //update bullets
+        for(let i = 0; i < this.bullets.length; i++)
+            this.bullets[i].update();
+
+        this.world.step(1 / 60);
     }
     toObject(){
         const result = {};
         result.players = this.players.map(x => x.toObject());
+        result.bullets = this.bullets.map(x => x.toObject());
         return result;
     }
 }

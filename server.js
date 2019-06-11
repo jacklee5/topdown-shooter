@@ -53,6 +53,7 @@ io.on('connection', function (socket) {
         }
 
         players[socket.id] = player;
+        player.socket = socket;
         socket.join(roomId);
         games[roomId].world.addBody(player.body);
         player.game = games[roomId];
@@ -72,12 +73,27 @@ io.on('connection', function (socket) {
         console.log(`[DEBUG] user ${player.name} disconnected`);
         player.leaveGame();
     })
+    socket.on("fire", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.fire();
+    });
+    socket.on("release", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.release();
+    })
+    socket.on("rotation", angle => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.rotation = angle;
+    })
 });
 
 //main loop
 setInterval(() => {
     for(let i in games){
-        games[i].tick();
+        games[i].tick(io);
         io.in(i).emit("state", games[i].toObject());
     }
 }, 1 / 60)
