@@ -109,6 +109,84 @@ class Game{
         result.bullets = this.bullets.map(x => x.toObject());
         return result;
     }
+
+    // returns all rectangular areas where players cannot stand. first array is index of rect.
+    // second array is info for each rect, 0 and 1 are first coord, 2 and 3 are second coord.
+    rectBoundaries() {
+        if (this.maptype === FORESTID) {
+            return [];
+        } else if (this.maptype === CITYID) {
+            return this.walls;
+        } else if (this.maptype === ROOFID) {
+            return [];
+        } else if (this.maptype === ICEID) {
+            return [];
+        }
+    }
+
+    // returns all circular areas where players cannot stand. first array is index of tree.
+    // second array is info for each tree, 0 is x, 1 is y, 3 is radius.
+    circleBoundaries() {
+        if (this.maptype === FORESTID) {
+            circles = [];
+            for (var i = 0; i < this.mapobjects.length; i++) {
+                circles[i] = [
+                    this.mapobjects[i].x,
+                    this.mapobjects[i].y,
+                    20
+                ];
+            }
+            return circles;
+        } else if (this.maptype === CITYID) {
+            return [];
+        } else if (this.maptype === ROOFID) {
+            return [];
+        } else if (this.maptype === ICEID) {
+            return [];
+        }
+    }
+
+    // returns all circular areas where players die. first array is index of tree.
+    // second array is info for each tree, 0 is x, 1 is y, 3 is radius.
+
+    rectDeath() {
+        if (this.maptype == FORESTID) {
+            return [];
+        } else if (this.maptype == CITYID) {
+            return [];
+        } else if (this.maptype == ROOFID) {
+            rects = [];
+            for (var i = 0; i < this.roads.length; i++) {
+                if (this.roads[i][0] === 1) {
+                    rects[i] = [
+                        (this.roads[i][1] - 1.5 * HALFROAD), 
+                        0, 
+                        (this.roads[i][1] - 1.5 * HALFROAD) + 3 * HALFROAD, 
+                        MAX_Y
+                    ];
+                }
+                if (this.roads[i][0] === 0) {
+                    this.rects[i] = [
+                        0,
+                        (roads[i][1] - 1.5 * HALFROAD),
+                        MAX_X,
+                        (roads[i][1] - 1.5 * HALFROAD) + 3 * HALFROAD         
+                    ];
+                }
+            }
+        } else if (this.maptype == ICEID) {
+            return [];
+        }
+    }
+
+    // returns all areas where you don't die in ice map.
+    // if empty array, it is not ice map.
+    circleNotDeath() {
+        if (this.maptype == ICEID) {
+            return [MAX_X / 2, MAX_Y / 2, MAX_Y / 3];
+        }
+        else return [];
+    }
 }
 
 module.exports = Game;
