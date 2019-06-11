@@ -5,13 +5,14 @@ const ROOT2 = Math.sqrt(2);
 const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, TREE, CAR, SNAKE } = require("../shared/constants");
 
 class Game{
-    constructor(id){
+    constructor(id, io){
         this.players = [];
         this.bullets = [];
         this.id = id;
         this.world = new p2.World({
             gravity: [0, 0]
         });
+        this.io = io;
 
         this.gameType = GAME_MODES.DEATHMATCH;
 
@@ -70,6 +71,14 @@ class Game{
         } else if (this.maptype === ICEID) {
 
         }
+    }
+    updateLeaderboard(){
+        this.io.in(this.id).emit("leaderboard", this.players.map(x => {
+            return {
+                name: x.name,
+                score: x.score
+            }
+        }));
     }
     isJoinable(){
         return this.players.length < MAX_PLAYERS;
