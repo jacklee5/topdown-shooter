@@ -73,12 +73,16 @@ class Game{
         }
     }
     updateLeaderboard(){
-        this.io.in(this.id).emit("leaderboard", this.players.map(x => {
+        const arr = this.players.map(x => {
             return {
                 name: x.name,
                 score: x.score
             }
-        }));
+        });
+        arr.sort((a, b) => {
+            return b.score - a.score;
+        })
+        this.io.in(this.id).emit("leaderboard", arr);
     }
     isJoinable(){
         return this.players.length < MAX_PLAYERS;
@@ -86,6 +90,7 @@ class Game{
     addPlayer(player){
         this.players.push(player);
         player.roomId = this.id;
+        this.updateLeaderboard();
     }
     tick(io){
         //update players

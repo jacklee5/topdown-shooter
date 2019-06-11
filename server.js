@@ -36,11 +36,11 @@ io.on('connection', function (socket) {
     console.log('[DEBUG] a user connected');
     socket.on("new player", (username) => {
         const player = new Player(username, socket.id);
+        player.socket = socket;
         let roomId;
 
         for(let i in games){
             if(games[i].isJoinable()){
-                games[i].addPlayer(player)
                 roomId = i;
                 break;
             }
@@ -48,14 +48,13 @@ io.on('connection', function (socket) {
 
         if(!roomId){
             const game = createGame();
-            game.addPlayer(player);
             roomId = game.id;
         }
 
+        socket.join(roomId);
+        games[roomId].addPlayer(player);
         socket.emit("map", games[roomId].map);
         players[socket.id] = player;
-        player.socket = socket;
-        socket.join(roomId);
         games[roomId].world.addBody(player.body);
         player.game = games[roomId];
 
@@ -99,7 +98,7 @@ setInterval(() => {
     }
 }, 1 / 60)
 
-http.listen(3000, function () {
+http.listen(3000 || process.env.PORT, function () {
     console.log('listening on *:3000');
 });
 
