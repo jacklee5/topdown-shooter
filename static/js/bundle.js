@@ -261,8 +261,6 @@ const draw = () => {
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
 
-    //draw background
-
     //player loop thing
     //find out which person is the user
     for(let i = 0; i < players.length; i++){
@@ -272,6 +270,10 @@ const draw = () => {
     }
 
 
+    //draw map
+    if(user)
+        drawMap();
+
     //draw bullets
     for(let i = 0; i < bullets.length; i++){
         drawBullet(bullets[i]);
@@ -280,7 +282,6 @@ const draw = () => {
 
     //draw players
     if(user){
-        drawMap();
         for(let i = 0; i < players.length; i++){
             const player = players[i];
             drawPlayer(player);
