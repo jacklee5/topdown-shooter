@@ -79,7 +79,8 @@ const KEYS = {
     UP: 87,
     LEFT: 65,
     DOWN: 83,
-    RIGHT: 68
+    RIGHT: 68,
+    VIEW_STATS: 9
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
@@ -137,6 +138,11 @@ const drawPlayer = (player) => {
         rightY = -CONSTANTS.PLAYER_SIZE - 4;
         leftX = 0;
         leftY = -CONSTANTS.PLAYER_SIZE - 4;
+    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
+        rightX = 0;
+        leftX = 4;
+        rightY = -CONSTANTS.PLAYER_SIZE - 4;
+        leftY = -CONSTANTS.PLAYER_SIZE - 20;
     }
     if(player.animating){
         if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_LEFT){
@@ -157,14 +163,16 @@ const drawPlayer = (player) => {
     //gun
     if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
         fill("black");
-        drawRect(-2, -CONSTANTS.PLAYER_SIZE, 4, -18);
+        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -18);
+    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
+        fill("black")
+        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -32);
     }
 
     ctx.restore();
 }
 
 const drawBullet = (bullet) => {
-    if(!bullet.exists) return;
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
     ctx.save();
@@ -173,6 +181,7 @@ const drawBullet = (bullet) => {
     
     fill("black");
     drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
+
     ctx.restore();
 }
 
@@ -187,9 +196,6 @@ const draw = () => {
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
 
-    //draw background
-    drawMap();
-
     //player loop thing
     //find out which person is the user
     for(let i = 0; i < players.length; i++){
@@ -198,10 +204,16 @@ const draw = () => {
             user = player;
     }
 
+
+    //draw map
+    if(user)
+        drawMap();
+
     //draw bullets
     for(let i = 0; i < bullets.length; i++){
         drawBullet(bullets[i]);
     }
+
 
     //draw players
     if(user){
@@ -236,9 +248,17 @@ const draw = () => {
 //keyboard events
 window.addEventListener("keydown", e => {
     keyStates[e.keyCode] = true;
+    if(e.keyCode === KEYS.VIEW_STATS){
+        e.preventDefault();
+        document.getElementById("game-info").style.display = "block";
+    }
 });
 window.addEventListener("keyup", e => {
     keyStates[e.keyCode] = false;
+    if(e.keyCode === KEYS.VIEW_STATS){
+        e.preventDefault();
+        document.getElementById("game-info").style.display = "none";
+    }
 });
 window.addEventListener("mousedown", () => {
     socket.emit("fire");
@@ -266,7 +286,7 @@ window.addEventListener("resize", () => {
 socket.on("state", state => {
     players = state.players;
     bullets = state.bullets;
-})
+});
 
 function drawMap() {
     ctx.fillStyle = "#008000";
@@ -285,31 +305,31 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
+            doRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
+            doRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
         }
 
         
@@ -317,31 +337,31 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
             }
         }
         
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
+            doRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
+            doRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
         }
 
 
@@ -354,6 +374,22 @@ function drawMap() {
         ctx.arc(width / 2, height / 2, height / 3, 0, 2 * Math.PI);
         ctx.fill();
     }
+}
+
+function realCoords(coord, axis) {
+    if (axis === 0) {
+        return coord / width * MAX_X;
+    } else if (axis === 1) {
+        return coord / height * MAX_Y;
+    }
+}
+
+function doRect(x,y,dx,dy) {
+    console.log(realCoords(x, 0));
+    console.log(realCoords(y, 1));
+    console.log(realCoords(dx, 0));
+    console.log(realCoords(dy, 1));
+    ctx.fillRect(realCoords(x, 0) - user.x, realCoords(y, 1) - user.y, realCoords(dx, 0), realCoords(dy, 1));
 }
 
 // returns all rectangular areas where players cannot stand. first array is index of rect.

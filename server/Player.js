@@ -1,4 +1,4 @@
-const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE } = require("../shared/constants.js");
+const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE, GAME_MODES } = require("../shared/constants.js");
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 const dist = (x1, y1, x2, y2) => {
@@ -14,11 +14,13 @@ class Player{
         this.id = id;
         this.rotation = 0;
         this.health = 100;
-        this.weapon = WEAPONS.PISTOL;
+        this.weapon = WEAPONS.AR;
         this.isPunching = false;
         this.socket;
         this.attackCooldown = 0;
         this.mouseDown = false;
+        this.kills = 0;
+        this.score = 0;
 
         //animation stuff
         this.animating = false;
@@ -54,7 +56,7 @@ class Player{
             else
                 this.animation = ANIMATIONS.PUNCH_RIGHT;
         }else if(this.attackCooldown === 0){
-            this.game.bullets.push(new Bullet(this.x, this.y, this.rotation - Math.PI / 2, this.weapon, this.game, this.id));
+            this.game.bullets.push(new Bullet(this.x, this.y, this.rotation - Math.PI / 2, this.weapon, this.game, this));
             this.attackCooldown = WEAPONS[this.weapon].cooldown;
         }
     }
@@ -114,7 +116,7 @@ class Player{
                     player.health -= WEAPONS[this.weapon].damage;
                     this.isPunching = false;
                     if(player.health < 0){
-                        player.socket.emit("death");
+                        this.kill(player);
                     }
                 }
             }
@@ -122,8 +124,14 @@ class Player{
 
         if(this.attackCooldown > 0)
             this.attackCooldown--;
-        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0)
+        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0 && this.mouseDown)
             this.fire();
+    }
+    kill(player){
+        player.socket.emit("death");
+        if(this.game.gameType === GAME_MODES.DEATHMATCH)
+            player.score++;
+        this.game.updateLeaderboard();
     }
     leaveGame(){
         const game = this.game;
@@ -151,8 +159,14 @@ class Player{
     get x(){
         return this.body.position[0];
     }
+    set x(x){
+        this.body.position[0] = x;
+    }
     get y(){
         return this.body.position[1];
+    }
+    set y(y){
+        this.body.position[1] = y;
     }
 }
 module.exports = Player;
