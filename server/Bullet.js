@@ -11,6 +11,8 @@ class Bullet{
         this.game = game;
         this.damage = WEAPONS[weapon].damage;
         this.exists = true;
+
+        //the player object of the shooter
         this.origin = origin;
         this.lifespan = 240;
     }
@@ -19,11 +21,11 @@ class Bullet{
         this.y += Math.sin(this.rotation) * this.speed;
         for(let i = 0; i < this.game.players.length; i++){
             const player = this.game.players[i];
-            if(player.id === this.origin) continue;
+            if(player.id === this.origin.id) continue;
             if(dist(player.x, player.y, this.x, this.y) < (PLAYER_SIZE + BULLET_SIZE)){
                 player.health -= this.damage;
                 if(player.health < 0){
-                    player.socket.emit("death");
+                    this.origin.kill(player);
                 }
                 this.destroy();
             }

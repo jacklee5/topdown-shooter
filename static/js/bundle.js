@@ -143,7 +143,8 @@ const KEYS = {
     UP: 87,
     LEFT: 65,
     DOWN: 83,
-    RIGHT: 68
+    RIGHT: 68,
+    VIEW_STATS: 9
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
@@ -308,9 +309,17 @@ const draw = () => {
 //keyboard events
 window.addEventListener("keydown", e => {
     keyStates[e.keyCode] = true;
+    if(e.keyCode === KEYS.VIEW_STATS){
+        e.preventDefault();
+        document.getElementById("game-info").style.display = "block";
+    }
 });
 window.addEventListener("keyup", e => {
     keyStates[e.keyCode] = false;
+    if(e.keyCode === KEYS.VIEW_STATS){
+        e.preventDefault();
+        document.getElementById("game-info").style.display = "none";
+    }
 });
 window.addEventListener("mousedown", () => {
     socket.emit("fire");
@@ -338,7 +347,7 @@ window.addEventListener("resize", () => {
 socket.on("state", state => {
     players = state.players;
     bullets = state.bullets;
-})
+});
 
 function drawMap() {
     ctx.fillStyle = "#008000";

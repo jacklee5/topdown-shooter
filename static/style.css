@@ -8,6 +8,7 @@ body{
     display: block;
 }
 #game-info{
+    display: none;
     position: fixed;
     top: 50vh;
     left: 50%;
