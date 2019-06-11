@@ -53,6 +53,7 @@ io.on('connection', function (socket) {
         }
 
         players[socket.id] = player;
+        player.socket = socket;
         socket.join(roomId);
         games[roomId].world.addBody(player.body);
         player.game = games[roomId];

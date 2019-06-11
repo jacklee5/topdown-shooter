@@ -3,13 +3,19 @@ const CONSTANTS = {
     PLAYER_SIZE: 15,
     //radians
     HAND_ANGLE: 45 * Math.PI / 180,
-    HAND_SIZE: 6,
+    HAND_SIZE: 5,
     FIST_REACH: 15,
+    BULLET_SIZE: 5,
     //enum for weapons, similar to below
     WEAPONS: {
         FISTS: 0,
         0: {
             damage: 30
+        },
+        PISTOL: 1,
+        1: {
+            damage: 15,
+            speed: 1
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
@@ -76,6 +82,7 @@ const keyStates = {};
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
+let bullets = [];
 //which player is the user
 let user;
 let height = window.innerHeight;
@@ -88,22 +95,24 @@ canvas.width = width;
 const fill = (f) => {
     ctx.fillStyle = f;
 }
+
 const drawRect = (x, y, w, h) => {
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.closePath();
     ctx.fill();
 }
+
 const drawCircle = (x, y, r) => {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2*Math.PI); 
     ctx.closePath();
     ctx.fill();
 }
+
 //stuff that stays the same (for left hand)
 const HAND_X = Math.cos(CONSTANTS.HAND_ANGLE) * CONSTANTS.PLAYER_SIZE;
 const HAND_Y = -Math.sin(CONSTANTS.HAND_ANGLE) * CONSTANTS.PLAYER_SIZE;
-//basic functions
 const drawPlayer = (player) => {
     let x = player.x - user.x + width / 2;
     let y = player.y - user.y + height / 2;
@@ -117,8 +126,15 @@ const drawPlayer = (player) => {
     //body
     drawCircle(0, 0, CONSTANTS.PLAYER_SIZE);
 
+    fill("red");
     //hands
     let rightX = HAND_X, rightY = HAND_Y, leftX = -HAND_X, leftY = HAND_Y;
+    if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
+        rightX = 0;
+        rightY = -CONSTANTS.PLAYER_SIZE - 4;
+        leftX = 0;
+        leftY = -CONSTANTS.PLAYER_SIZE - 4;
+    }
     if(player.animating){
         if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_LEFT){
             const length = CONSTANTS.ANIMATIONS[player.animation].length;
@@ -130,10 +146,30 @@ const drawPlayer = (player) => {
             rightX -= Math.sin(player.animationProgress * Math.PI / length) * CONSTANTS.FIST_REACH;
             rightY -= Math.sin(player.animationProgress * Math.PI / length) * CONSTANTS.FIST_REACH;
         }
+        
     }
     drawCircle(leftX, leftY, CONSTANTS.HAND_SIZE);
     drawCircle(rightX, rightY, CONSTANTS.HAND_SIZE);
 
+    //gun
+    if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
+        fill("black");
+        drawRect(-2, -CONSTANTS.PLAYER_SIZE, 4, -18);
+    }
+
+    ctx.restore();
+}
+
+const drawBullet = (bullet) => {
+    if(!bullet.exists) return;
+    let x = bullet.x - user.x + width / 2;
+    let y = bullet.y - user.y + height / 2;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(bullet.rotation);
+    
+    fill("black");
+    drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
     ctx.restore();
 }
 
@@ -152,14 +188,20 @@ const draw = () => {
     fill("green");
     drawRect(0, 0, width, height);
 
+    //find out which person is the user
     for(let i = 0; i < players.length; i++){
         const player = players[i];
         if(player.id === socket.id)
             user = player;
     }
 
-    if(user){    
-        //draw players
+    //draw bullets
+    for(let i = 0; i < bullets.length; i++){
+        drawBullet(bullets[i]);
+    }
+
+    //draw players
+    if(user){
         for(let i = 0; i < players.length; i++){
             const player = players[i];
             drawPlayer(player);
@@ -179,7 +221,7 @@ const draw = () => {
             fill("white");
         else   
             fill("red");
-        drawRect(width / 2 - 196, height - 71, (health / 100) * 392, 32)
+        drawRect(width / 2 - 196, height - 71, (health > 0 ? health / 100 : 0) * 392, 32)
     }
 
     //send data to server
@@ -217,5 +259,6 @@ window.addEventListener("resize", () => {
 //listen for state change
 socket.on("state", state => {
     players = state.players;
+    bullets = state.bullets;
 })
 },{"../../shared/constants.js":1}]},{},[2]);
