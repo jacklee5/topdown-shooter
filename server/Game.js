@@ -15,8 +15,7 @@ const { CAR } = require("../shared/constants");
 const { SNAKE } = require("../shared/constants");
 
 class Game{
-    constructor(id, io){
-        this.socket = io;
+    constructor(id){
         this.players = [];
         this.bullets = [];
         this.id = id;
@@ -31,16 +30,14 @@ class Game{
         this.roads = [];
 
         this.createMap();
-        this.socket.emit("map", 
-            {
-                notholes: this.notholes,
-                walls: this.walls,
-                maptype: this.maptype,
-                mapobjects: this.mapobjects,
-                hazards: this.hazards,
-                roads: this.roads
-            }
-        );
+        this.map = {
+            notholes: this.notholes,
+            walls: this.walls,
+            maptype: this.maptype,
+            mapobjects: this.mapobjects,
+            hazards: this.hazards,
+            roads: this.roads
+        }
     }
     createMap() {
         console.log(FORESTID);

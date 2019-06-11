@@ -18,7 +18,7 @@ const CONSTANTS = {
 
 	SNAKE: {
 	    health: 25
-	}
+	},
     //radians
     HAND_ANGLE: 45 * Math.PI / 180,
     HAND_SIZE: 5,

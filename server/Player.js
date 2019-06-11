@@ -14,7 +14,7 @@ class Player{
         this.id = id;
         this.rotation = 0;
         this.health = 100;
-        this.weapon = WEAPONS.AR;
+        this.weapon = WEAPONS.PISTOL;
         this.isPunching = false;
         this.socket;
         this.attackCooldown = 0;

@@ -95,9 +95,6 @@ canvas.style.width = width + "px";
 canvas.height = height;
 canvas.width = width;
 
-let HEIGHT = height;
-let WIDTH = width;
-
 const fill = (f) => {
     ctx.fillStyle = f;
 }
@@ -273,13 +270,13 @@ socket.on("state", state => {
 
 function drawMap() {
     ctx.fillStyle = "#008000";
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctx.fillRect(0, 0, width, height);
     console.log(maptype);
     if (maptype === FORESTID) {
         ctx.fillStyle = "#FF8000";
         for (var i = 0; i < mapobjects.length; i++) {
             ctx.beginPath();
-            ctx.arc(mapobjects[i].x / MAX_X * WIDTH, mapobjects[i].y / MAX_Y * HEIGHT, HEIGHT / 20 / 100 * mapobjects[i].health, 0, 2 * Math.PI);
+            ctx.arc(mapobjects[i].x / MAX_X * width, mapobjects[i].y / MAX_Y * height, height / 20 / 100 * mapobjects[i].health, 0, 2 * Math.PI);
             ctx.fill();
             console.log(mapobjects[i].x);
             console.log(mapobjects[i].y);
@@ -288,31 +285,31 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * WIDTH, 0, 3 * HALFROAD / MAX_X * WIDTH, HEIGHT);
+                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * HEIGHT, WIDTH, 3 * HALFROAD / MAX_Y * HEIGHT);
+                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * WIDTH, 0, 2 * HALFROAD / MAX_X * WIDTH, HEIGHT);
+                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * HEIGHT, WIDTH, 2 * HALFROAD / MAX_Y * HEIGHT);
+                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0]) / MAX_X * WIDTH, (walls[i][1]) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0]) / MAX_X * WIDTH, (walls[i][3] - walls[i][1]) / MAX_Y * HEIGHT);
+            ctx.fillRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * WIDTH, (walls[i][1] + HALFROAD / 2) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * WIDTH, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * HEIGHT);
+            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
         }
 
         
@@ -320,41 +317,41 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * WIDTH, 0, 3 * HALFROAD / MAX_X * WIDTH, HEIGHT);
+                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * HEIGHT, WIDTH, 3 * HALFROAD / MAX_Y * HEIGHT);
+                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * WIDTH, 0, 2 * HALFROAD / MAX_X * WIDTH, HEIGHT);
+                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * HEIGHT, WIDTH, 2 * HALFROAD / MAX_Y * HEIGHT);
+                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
             }
         }
         
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0]) / MAX_X * WIDTH, (walls[i][1]) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0]) / MAX_X * WIDTH, (walls[i][3] - walls[i][1]) / MAX_Y * HEIGHT);
+            ctx.fillRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * WIDTH, (walls[i][1] + HALFROAD / 2) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * WIDTH, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * HEIGHT);
+            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
         }
 
 
         
     } else if (maptype === ICEID) {
         ctx.fillStyle = "#00FFFF";
-        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.fillRect(0, 0, width, height);
         ctx.fillStyle = "#80FFFF";
         ctx.beginPath();
-        ctx.arc(WIDTH / 2, HEIGHT / 2, HEIGHT / 3, 0, 2 * Math.PI);
+        ctx.arc(width / 2, height / 2, height / 3, 0, 2 * Math.PI);
         ctx.fill();
     }
 }
@@ -380,9 +377,9 @@ function circleBoundaries() {
         circles = [];
         for (var i = 0; i < mapobjects.length; i++) {
             circles[i] = [
-                mapobjects[i].x / MAX_X * WIDTH,
-                mapobjects[i].y / MAX_Y * HEIGHT,
-                HEIGHT / 20 / 100 * mapobjects[i].health
+                mapobjects[i].x / MAX_X * width,
+                mapobjects[i].y / MAX_Y * height,
+                height / 20 / 100 * mapobjects[i].health
             ];
         }
     } else if (maptype === CITYID) {
@@ -407,18 +404,18 @@ function rectDeath() {
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
                 rects[i] = [
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_X * WIDTH, 
+                    (roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 
                     0, 
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_X * WIDTH + 3 * HALFROAD / MAX_X * WIDTH, 
-                    HEIGHT
+                    (roads[i][1] - 1.5 * HALFROAD) / MAX_X * width + 3 * HALFROAD / MAX_X * width, 
+                    height
                 ];
             }
             if (roads[i][0] === 0) {
                 rects[i] = [
                     0,
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * HEIGHT,
-                    WIDTH,
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * HEIGHT + 3 * HALFROAD / MAX_Y * HEIGHT         
+                    (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height,
+                    width,
+                    (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height + 3 * HALFROAD / MAX_Y * height         
                 ];
             }
         }
@@ -431,7 +428,7 @@ function rectDeath() {
 // if empty array, it is not ice map.
 function circleNotDeath() {
     if (maptype == ICEID) {
-        return [WIDTH / 2, HEIGHT / 2, HEIGHT / 3];
+        return [width / 2, height / 2, height / 3];
     }
     else return [];
 }

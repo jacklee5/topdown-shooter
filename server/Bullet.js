@@ -12,6 +12,7 @@ class Bullet{
         this.damage = WEAPONS[weapon].damage;
         this.exists = true;
         this.origin = origin;
+        this.lifespan = 90;
     }
     update(){
         this.x += Math.cos(this.rotation) * this.speed;
@@ -24,12 +25,18 @@ class Bullet{
                 if(player.health < 0){
                     player.socket.emit("death");
                 }
-                this.exists = false;
+                this.destroy();
             }
         }
     }
     destroy(){
-        
+        this.exists = false;
+        const bullets = this.game.bullets;
+        for(let i = 0; i < bullets.length; i++){
+            if(bullets[i] === this){
+                console.log(i);
+            }
+        }
     }
     toObject(){
         return {

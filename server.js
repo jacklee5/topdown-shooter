@@ -27,7 +27,7 @@ const getId = () => {
 //creates a game
 const createGame = () => {
     const id = getId();
-    const game = new Game(id, io);
+    const game = new Game(id);
     games[id] = game;
     return game;
 }
@@ -52,6 +52,7 @@ io.on('connection', function (socket) {
             roomId = game.id;
         }
 
+        socket.emit("map", games[roomId].map);
         players[socket.id] = player;
         player.socket = socket;
         socket.join(roomId);
