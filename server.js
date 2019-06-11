@@ -9,7 +9,7 @@ app.use("/static", express.static("static"));
 app.use("/shared", express.static("shared"));
 
 app.get('/', function (req, res) {
-    res.render('LandingPage.ejs');
+    res.render('index.ejs');
 });
 
 //load classes
