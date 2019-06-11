@@ -40,7 +40,8 @@ socket.on("map", data =>
 //page switching stuff
 const PAGES = {
     HOME: 0,
-    GAME: 1
+    GAME: 1,
+    GAMEOVER: 2
 }
 let currentPage = PAGES.HOME;
 let inGame = false;
@@ -170,6 +171,12 @@ const drawPlayer = (player) => {
     }
 
     ctx.restore();
+    
+    for(let i = 0; i<players.length; i++){
+        const player = players[i];
+        ctx.font = '48px serif';
+        ctx.fillText(player.name, 10, 50);        
+    }
 }
 
 const drawBullet = (bullet) => {
@@ -195,6 +202,10 @@ const draw = () => {
     movement.down = keyStates[KEYS.DOWN];
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
+    const weapons = {}
+    weapons.fist = keyStates[KEYS.FIST];
+    weapons.pistol = keyStates[KEYS.PISTOL];
+    weapons.ar = keyStates[KEYS.AR];
 
     //player loop thing
     //find out which person is the user
@@ -220,8 +231,6 @@ const draw = () => {
         for(let i = 0; i < players.length; i++){
             const player = players[i];
             drawPlayer(player);
-            if(player.id === socket.id)
-                user = player;
         }
 
         //draw player health
@@ -282,11 +291,34 @@ window.addEventListener("resize", () => {
     canvas.width = width;
 });
 
+document.getElementById("respawn-button").addEventListener("click", () => {
+    socket.emit("")
+})
+
 //listen for state change
 socket.on("state", state => {
     players = state.players;
     bullets = state.bullets;
 });
+socket.on("leaderboard", data => {
+    const el = document.getElementById("ranks");
+    el.innerHTML = `
+    <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th span = "score-type">Kills</th>
+    </tr>`;
+    for(let i = 0; i < data.length; i++){
+        el.innerHTML += `<tr>
+            <td>${i + 1}</td>
+            <td>${data[i].name}</td>
+            <td>${data[i].score}</td>
+        </tr>`
+    }
+});
+socket.on("death", () => {
+    changePage(PAGES.GAMEOVER);
+})
 
 function drawMap() {
     ctx.fillStyle = "#008000";
