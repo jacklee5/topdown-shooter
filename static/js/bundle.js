@@ -1,12 +1,28 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const CONSTANTS = { 
-    PLAYER_SIZE: 15 
+    PLAYER_SIZE: 15,
+    //radians
+    HAND_ANGLE: 45 * Math.PI / 180,
+    HAND_SIZE: 6,
+    WEAPONS: {
+        FISTS: 0
+    },
+    ANIMATIONS: {
+        PUNCH_LEFT: 0,
+        0: {
+            length: 120
+        },
+        PUNCH_RIGHT: 1,
+        1: {
+            length: 120
+        }
+    }
+    
 }
 module.exports = CONSTANTS;
 },{}],2:[function(require,module,exports){
 const socket = io();
 const CONSTANTS = require("../../shared/constants.js")
-
 //page switching stuff
 const PAGES = {
     HOME: 0,
@@ -79,13 +95,40 @@ const drawCircle = (x, y, r) => {
     ctx.closePath();
     ctx.fill();
 }
+//stuff that stays the same (for left hand)
+const HAND_X = Math.cos(CONSTANTS.HAND_ANGLE) * CONSTANTS.PLAYER_SIZE;
+const HAND_Y = -Math.sin(CONSTANTS.HAND_ANGLE) * CONSTANTS.PLAYER_SIZE;
 //basic functions
-const drawPlayer = (x, y, r) => {
+const drawPlayer = (player) => {
+    let x = player.x - user.x + width / 2;
+    let y = player.y - user.y + height / 2;
+    let r = player.rotation;
     fill("red");
+
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(r);
+    
+    //body
     drawCircle(0, 0, CONSTANTS.PLAYER_SIZE);
+
+    //hands
+    let rightX = HAND_X, rightY = HAND_Y, leftX = -HAND_X, leftY = HAND_Y;
+    if(player.animating){
+        if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_LEFT){
+            const length = CONSTANTS.ANIMATIONS[user.animation].length;
+            leftX += Math.sin(user.animationProgress * Math.PI / length) * 8;
+            leftY -= Math.sin(user.animationProgress * Math.PI / length) * 8;
+        }
+        if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_RIGHT){
+            const length = CONSTANTS.ANIMATIONS[user.animation].length;
+            rightX -= Math.sin(user.animationProgress * Math.PI / length) * 8;
+            rightY -= Math.sin(user.animationProgress * Math.PI / length) * 8;
+        }
+    }
+    drawCircle(leftX, leftY, CONSTANTS.HAND_SIZE);
+    drawCircle(rightX, rightY, CONSTANTS.HAND_SIZE);
+
     ctx.restore();
 }
 
@@ -114,7 +157,7 @@ const draw = () => {
         //draw players
         for(let i = 0; i < players.length; i++){
             const player = players[i];
-            drawPlayer(player.x - user.x + width / 2, player.y - user.y + height / 2, player.rotation);
+            drawPlayer(player);
             if(player.id === socket.id)
                 user = player;
         }
@@ -146,6 +189,14 @@ window.addEventListener("keydown", e => {
 });
 window.addEventListener("keyup", e => {
     keyStates[e.keyCode] = false;
+});
+window.addEventListener("mousedown", () => {
+    socket.emit("fire");
+})
+
+//rotate player
+window.addEventListener("mousemove", e => {
+    socket.emit("rotation", Math.atan2((e.clientX - width / 2), (height / 2 - e.clientY)));
 });
 
 //dont make canvas stupid

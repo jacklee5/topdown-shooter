@@ -19,3 +19,6 @@ the snakes have evolved pls help
  - landing page
 ### Kuymin
  - keybindings
+
+ ## Unassigned
+  - animations (punching, maybe reloading)

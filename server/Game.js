@@ -1,6 +1,7 @@
 const MAX_PLAYERS = 20;
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
+const { ANIMATIONS } = require("../shared/constants.js");
 class Game{
     constructor(id){
         this.players = [];
@@ -17,9 +18,10 @@ class Game{
         player.roomId = this.id;
     }
     tick(){
-        //move players
+        //update players
         for(let i = 0; i < this.players.length; i++){
             const player = this.players[i];
+
             let movementSpeed = player.movementSpeed;
             player.body.velocity = [0, 0];
             if((player.movement.up || player.movement.down) && (player.movement.left || player.movement.right))
@@ -32,6 +34,14 @@ class Game{
                 player.body.velocity[0] = -movementSpeed;
             if(player.movement.right)
                 player.body.velocity[0] = movementSpeed;
+
+            if(player.animating)
+                if(ANIMATIONS[player.animation].length > player.animationProgress)
+                    player.animationProgress++;
+                else{
+                    player.animationProgress = 0;
+                    player.animating = false;
+                }
         }
         this.world.step(1 / 60);
         

@@ -72,6 +72,16 @@ io.on('connection', function (socket) {
         console.log(`[DEBUG] user ${player.name} disconnected`);
         player.leaveGame();
     })
+    socket.on("fire", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.fire();
+    });
+    socket.on("rotation", angle => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.rotation = angle;
+    })
 });
 
 //main loop
