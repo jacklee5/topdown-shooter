@@ -21,4 +21,5 @@ the snakes have evolved pls help
  - keybindings
 
  ## Unassigned
+  - death screen
   - animations (punching, maybe reloading)

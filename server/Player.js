@@ -10,10 +10,11 @@ class Player{
         this.rotation = 0;
         this.health = 100;
         this.weapon = WEAPONS.FISTS;
+        this.isPunching = false;
 
         //animation stuff
         this.animating = false;
-        this.animation;
+        this.animation = 0;
         this.animationProgress = 0;
 
         //physics body
@@ -38,6 +39,7 @@ class Player{
             if(this.animating) return;
             let rand = Math.floor(Math.random() * 2);
             this.animating = true;
+            this.isPunching = true;
             if(rand === 0)
                 this.animation = ANIMATIONS.PUNCH_LEFT;
             else

@@ -93,14 +93,14 @@ const drawPlayer = (player) => {
     let rightX = HAND_X, rightY = HAND_Y, leftX = -HAND_X, leftY = HAND_Y;
     if(player.animating){
         if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_LEFT){
-            const length = CONSTANTS.ANIMATIONS[user.animation].length;
-            leftX += Math.sin(user.animationProgress * Math.PI / length) * 8;
-            leftY -= Math.sin(user.animationProgress * Math.PI / length) * 8;
+            const length = CONSTANTS.ANIMATIONS[player.animation].length;
+            leftX += Math.sin(player.animationProgress * Math.PI / length) * CONSTANTS.FIST_REACH;
+            leftY -= Math.sin(player.animationProgress * Math.PI / length) * CONSTANTS.FIST_REACH;
         }
         if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_RIGHT){
-            const length = CONSTANTS.ANIMATIONS[user.animation].length;
-            rightX -= Math.sin(user.animationProgress * Math.PI / length) * 8;
-            rightY -= Math.sin(user.animationProgress * Math.PI / length) * 8;
+            const length = CONSTANTS.ANIMATIONS[player.animation].length;
+            rightX -= Math.sin(player.animationProgress * Math.PI / length) * CONSTANTS.FIST_REACH;
+            rightY -= Math.sin(player.animationProgress * Math.PI / length) * CONSTANTS.FIST_REACH;
         }
     }
     drawCircle(leftX, leftY, CONSTANTS.HAND_SIZE);

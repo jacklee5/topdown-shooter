@@ -87,7 +87,7 @@ io.on('connection', function (socket) {
 //main loop
 setInterval(() => {
     for(let i in games){
-        games[i].tick();
+        games[i].tick(io);
         io.in(i).emit("state", games[i].toObject());
     }
 }, 1 / 60)
