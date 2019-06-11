@@ -104,7 +104,8 @@ socket.on("map", data =>
 //page switching stuff
 const PAGES = {
     HOME: 0,
-    GAME: 1
+    GAME: 1,
+    GAMEOVER: 2
 }
 let currentPage = PAGES.HOME;
 let inGame = false;
@@ -260,9 +261,6 @@ const draw = () => {
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
 
-    //draw background
-    drawMap();
-
     //player loop thing
     //find out which person is the user
     for(let i = 0; i < players.length; i++){
@@ -271,18 +269,22 @@ const draw = () => {
             user = player;
     }
 
+
+    //draw map
+    if(user)
+        drawMap();
+
     //draw bullets
     for(let i = 0; i < bullets.length; i++){
         drawBullet(bullets[i]);
     }
+
 
     //draw players
     if(user){
         for(let i = 0; i < players.length; i++){
             const player = players[i];
             drawPlayer(player);
-            if(player.id === socket.id)
-                user = player;
         }
 
         //draw player health
@@ -343,11 +345,34 @@ window.addEventListener("resize", () => {
     canvas.width = width;
 });
 
+document.getElementById("respawn-button").addEventListener("click", () => {
+    socket.emit("")
+})
+
 //listen for state change
 socket.on("state", state => {
     players = state.players;
     bullets = state.bullets;
 });
+socket.on("leaderboard", data => {
+    const el = document.getElementById("ranks");
+    el.innerHTML = `
+    <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th span = "score-type">Kills</th>
+    </tr>`;
+    for(let i = 0; i < data.length; i++){
+        el.innerHTML += `<tr>
+            <td>${i + 1}</td>
+            <td>${data[i].name}</td>
+            <td>${data[i].score}</td>
+        </tr>`
+    }
+});
+socket.on("death", () => {
+    changePage(PAGES.GAMEOVER);
+})
 
 function drawMap() {
     ctx.fillStyle = "#008000";
@@ -366,31 +391,31 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
+            doRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
+            doRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
         }
 
         
@@ -398,31 +423,31 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                ctx.fillRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
             }
             if (roads[i][0] === 0) {
-                ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
             }
         }
         
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
+            doRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
+            doRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
         }
 
 
@@ -435,6 +460,22 @@ function drawMap() {
         ctx.arc(width / 2, height / 2, height / 3, 0, 2 * Math.PI);
         ctx.fill();
     }
+}
+
+function realCoords(coord, axis) {
+    if (axis === 0) {
+        return coord / width * MAX_X;
+    } else if (axis === 1) {
+        return coord / height * MAX_Y;
+    }
+}
+
+function doRect(x,y,dx,dy) {
+    console.log(realCoords(x, 0));
+    console.log(realCoords(y, 1));
+    console.log(realCoords(dx, 0));
+    console.log(realCoords(dy, 1));
+    ctx.fillRect(realCoords(x, 0) - user.x, realCoords(y, 1) - user.y, realCoords(dx, 0), realCoords(dy, 1));
 }
 
 // returns all rectangular areas where players cannot stand. first array is index of rect.

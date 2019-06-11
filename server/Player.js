@@ -137,8 +137,24 @@ class Player{
     kill(player){
         player.socket.emit("death");
         if(this.game.gameType === GAME_MODES.DEATHMATCH)
-            player.score++;
+            this.score++;
         this.game.updateLeaderboard();
+        player.deactivate();
+    }
+    deactivate(){
+        const players = this.game.players;
+        for(let i = 0; i < players.length; i++){
+            if(players[i] === this){
+                players.splice(i, 1);
+                break;
+            }
+        }
+        this.body.shapes[0].sensor = true;
+    }
+    activate(){
+        const players = this.game.players;
+        players.push(this);
+        this.body.shapes[0].sensor = false;
     }
     leaveGame(){
         const game = this.game;
