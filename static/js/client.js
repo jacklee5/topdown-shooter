@@ -79,7 +79,13 @@ const KEYS = {
     UP: 87,
     LEFT: 65,
     DOWN: 83,
-    RIGHT: 68
+    RIGHT: 68,
+    FIST: 49,
+    PISTOL: 50,
+    AR: 51
+
+
+
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
@@ -186,6 +192,10 @@ const draw = () => {
     movement.down = keyStates[KEYS.DOWN];
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
+    const weapons = {}
+    weapons.fist = keyStates[KEYS.FIST];
+    weapons.pistol = keyStates[KEYS.PISTOL];
+    weapons.ar = keyStates[KEYS.AR];
 
     //draw background
     drawMap();

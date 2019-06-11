@@ -22,9 +22,6 @@ class Bullet{
             if(player.id === this.origin) continue;
             if(this.exists && dist(player.x, player.y, this.x, this.y) < (PLAYER_SIZE + BULLET_SIZE)){
                 player.health -= this.damage;
-                if(player.health < 0){
-                    player.socket.emit("death");
-                }
                 this.destroy();
             }
         }
