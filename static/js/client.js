@@ -137,6 +137,11 @@ const drawPlayer = (player) => {
         rightY = -CONSTANTS.PLAYER_SIZE - 4;
         leftX = 0;
         leftY = -CONSTANTS.PLAYER_SIZE - 4;
+    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
+        rightX = 0;
+        leftX = 4;
+        rightY = -CONSTANTS.PLAYER_SIZE - 4;
+        leftY = -CONSTANTS.PLAYER_SIZE - 20;
     }
     if(player.animating){
         if(player.animation === CONSTANTS.ANIMATIONS.PUNCH_LEFT){
@@ -157,14 +162,16 @@ const drawPlayer = (player) => {
     //gun
     if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
         fill("black");
-        drawRect(-2, -CONSTANTS.PLAYER_SIZE, 4, -18);
+        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -18);
+    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
+        fill("black")
+        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -32);
     }
 
     ctx.restore();
 }
 
 const drawBullet = (bullet) => {
-    if(!bullet.exists) return;
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
     ctx.save();
@@ -173,6 +180,7 @@ const drawBullet = (bullet) => {
     
     fill("black");
     drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
+
     ctx.restore();
 }
 

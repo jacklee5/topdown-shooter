@@ -2,17 +2,7 @@ const MAX_PLAYERS = 20;
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 
-const { MAX_TREES } = require("../shared/constants");
-const { MAX_X } = require("../shared/constants");
-const { MAX_Y } = require("../shared/constants");
-const { FORESTID } = require("../shared/constants");
-const { CITYID } = require("../shared/constants");
-const { ROOFID } = require("../shared/constants");
-const { ICEID } = require("../shared/constants");
-const { HALFROAD } = require("../shared/constants");
-const { TREE } = require("../shared/constants");
-const { CAR } = require("../shared/constants");
-const { SNAKE } = require("../shared/constants");
+const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, TREE, CAR, SNAKE } = require("../shared/constants");
 
 class Game{
     constructor(id){
@@ -22,6 +12,9 @@ class Game{
         this.world = new p2.World({
             gravity: [0, 0]
         });
+
+        this.gameType = GAME_MODES.DEATHMATCH;
+
         this.notholes = [];
         this.walls = [];
         this.maptype = 0;

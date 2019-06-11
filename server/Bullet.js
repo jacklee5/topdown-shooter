@@ -12,7 +12,7 @@ class Bullet{
         this.damage = WEAPONS[weapon].damage;
         this.exists = true;
         this.origin = origin;
-        this.lifespan = 90;
+        this.lifespan = 240;
     }
     update(){
         this.x += Math.cos(this.rotation) * this.speed;
@@ -20,7 +20,7 @@ class Bullet{
         for(let i = 0; i < this.game.players.length; i++){
             const player = this.game.players[i];
             if(player.id === this.origin) continue;
-            if(this.exists && dist(player.x, player.y, this.x, this.y) < (PLAYER_SIZE + BULLET_SIZE)){
+            if(dist(player.x, player.y, this.x, this.y) < (PLAYER_SIZE + BULLET_SIZE)){
                 player.health -= this.damage;
                 if(player.health < 0){
                     player.socket.emit("death");
@@ -28,13 +28,15 @@ class Bullet{
                 this.destroy();
             }
         }
+        this.lifespan--;
+        if(this.lifespan === 0)
+            this.destroy();
     }
     destroy(){
-        this.exists = false;
         const bullets = this.game.bullets;
-        for(let i = 0; i < bullets.length; i++){
+        for(let i = bullets.length - 1; i >= 0; i--){
             if(bullets[i] === this){
-                console.log(i);
+                bullets.splice(i, 1);
             }
         }
     }
@@ -43,7 +45,6 @@ class Bullet{
             x: this.x,
             y: this.y,
             rotation: this.rotation,
-            exists: this.exists
         }
     }
 }

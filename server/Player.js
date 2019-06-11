@@ -14,11 +14,12 @@ class Player{
         this.id = id;
         this.rotation = 0;
         this.health = 100;
-        this.weapon = WEAPONS.PISTOL;
+        this.weapon = WEAPONS.AR;
         this.isPunching = false;
         this.socket;
         this.attackCooldown = 0;
         this.mouseDown = false;
+        this.kills = 0;
 
         //animation stuff
         this.animating = false;
@@ -122,7 +123,7 @@ class Player{
 
         if(this.attackCooldown > 0)
             this.attackCooldown--;
-        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0)
+        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0 && this.mouseDown)
             this.fire();
     }
     leaveGame(){
@@ -151,8 +152,14 @@ class Player{
     get x(){
         return this.body.position[0];
     }
+    set x(x){
+        this.body.position[0] = x;
+    }
     get y(){
         return this.body.position[1];
+    }
+    set y(y){
+        this.body.position[1] = y;
     }
 }
 module.exports = Player;
