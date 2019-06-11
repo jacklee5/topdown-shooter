@@ -5,7 +5,7 @@ const FORESTID = 0;
 const CITYID = 1;
 const ROOFID = 2;
 const ICEID = 3;
-const HALFROAD = (MAX_X / 20);
+const HALFROAD = (MAX_X / 30);
 
 var notholes = [];
 var walls = [];
@@ -25,20 +25,14 @@ canvas.height = HEIGHT;
 canvas.width = WIDTH;
 
 const tree = {
-    x: -1,
-    y: -1,
-    health: 175
+    health: 100
 }
 
 const car = {
-    x: -1,
-    y: -1,
     speed: 100
 }
 
 const snake = {
-    x: -1,
-    y: -1,
     health: 25
 }
 
@@ -52,59 +46,40 @@ function createMap() {
             mapobjects.push(tree);
             mapobjects[i].x = (Math.random() * MAX_X);
             mapobjects[i].y = (Math.random() * MAX_Y);
-            console.log(Math.random());
-            console.log(Math.random());
         }
     } else if (maptype === CITYID) {
-        var vert1 = (Math.random() * MAX_X / 7 + 2 * MAX_X / 7);
-    	var vert2 = (Math.random() * MAX_X / 7 + 4 * MAX_X / 7);
-    	var vert3 = (Math.random() * MAX_X / 7 + 6 * MAX_X / 7);
-    	var horz1 = (Math.random() * MAX_Y / 5 + 2 * MAX_X / 7);
-    	var horz2 = (Math.random() * MAX_Y / 5 + 4 * MAX_X / 7);
-    	roads.push([1, vert1], [1, vert2], [1, vert3], [0, horz1], [0, horz2]);
-    	walls.push(
-            [0,                     0                       ,  vert1 - 2 * HALFROAD,   horz1 - 2 * HALFROAD ],
-            [vert1 + 2 * HALFROAD,  0                       ,  vert2 - 2 * HALFROAD,   horz1 - 2 * HALFROAD ],
-            [vert2 + 2 * HALFROAD,  0                       ,  vert3 - 2 * HALFROAD,   horz1 - 2 * HALFROAD ],
-            [vert3 + 2 * HALFROAD,  0                       ,  MAX_X               ,   horz1 - 2 * HALFROAD ],
-            [0,                     horz1 + 2 * HALFROAD    ,  vert1 - 2 * HALFROAD,   horz2 - 2 * HALFROAD ],
-            [vert1 + 2 * HALFROAD,  horz1 + 2 * HALFROAD    ,  vert2 - 2 * HALFROAD,   horz2 - 2 * HALFROAD ],
-            [vert2 + 2 * HALFROAD,  horz1 + 2 * HALFROAD    ,  vert3 - 2 * HALFROAD,   horz2 - 2 * HALFROAD ],
-            [vert3 + 2 * HALFROAD,  horz1 + 2 * HALFROAD    ,  MAX_X               ,   horz2 - 2 * HALFROAD ],
-            [0,                     horz2 + 2 * HALFROAD    ,  vert1 - 2 * HALFROAD,   MAX_Y                ],
-            [vert1 + 2 * HALFROAD,  horz2 + 2 * HALFROAD    ,  vert2 - 2 * HALFROAD,   MAX_Y                ],
-            [vert2 + 2 * HALFROAD,  horz2 + 2 * HALFROAD    ,  vert3 - 2 * HALFROAD,   MAX_Y                ],
-            [vert3 + 2 * HALFROAD,  horz2 + 2 * HALFROAD    ,  MAX_X               ,   MAX_Y                ]
+        var vert1 = (Math.random() * MAX_X / 7 + 1 * MAX_X / 5);
+    	var vert2 = (Math.random() * MAX_X / 7 + 3 * MAX_X / 5);
+    	var horz1 = (Math.random() * MAX_Y / 3 + 1 * MAX_Y / 3);
+    	roads.push([1, vert1], [1, vert2], [0, horz1]);
+        walls.push(
+            [0                    + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+            [vert1 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+            [vert2 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+            [0                    + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
+            [vert1 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
+            [vert2 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ]
         );
     } else if (maptype === ROOFID) {
-        var vert1 = (Math.random() * MAX_X / 7 + 2 * MAX_X / 7);
-        var vert2 = (Math.random() * MAX_X / 7 + 4 * MAX_X / 7);
-        var vert3 = (Math.random() * MAX_X / 7 + 6 * MAX_X / 7);
-        var horz1 = (Math.random() * MAX_Y / 5 + 2 * MAX_X / 7);
-        var horz2 = (Math.random() * MAX_Y / 5 + 4 * MAX_X / 7);
-        roads.push([1, vert1], [1, vert2], [1, vert3], [0, horz1], [0, horz2]);
-        notholes.push(
-            [0,                     0                       ,  vert1 - 2 * HALFROAD,   horz1 - 2 * HALFROAD ],
-            [vert1 + 2 * HALFROAD,  0                       ,  vert2 - 2 * HALFROAD,   horz1 - 2 * HALFROAD ],
-            [vert2 + 2 * HALFROAD,  0                       ,  vert3 - 2 * HALFROAD,   horz1 - 2 * HALFROAD ],
-            [vert3 + 2 * HALFROAD,  0                       ,  MAX_X               ,   horz1 - 2 * HALFROAD ],
-            [0,                     horz1 + 2 * HALFROAD    ,  vert1 - 2 * HALFROAD,   horz2 - 2 * HALFROAD ],
-            [vert1 + 2 * HALFROAD,  horz1 + 2 * HALFROAD    ,  vert2 - 2 * HALFROAD,   horz2 - 2 * HALFROAD ],
-            [vert2 + 2 * HALFROAD,  horz1 + 2 * HALFROAD    ,  vert3 - 2 * HALFROAD,   horz2 - 2 * HALFROAD ],
-            [vert3 + 2 * HALFROAD,  horz1 + 2 * HALFROAD    ,  MAX_X               ,   horz2 - 2 * HALFROAD ],
-            [0,                     horz2 + 2 * HALFROAD    ,  vert1 - 2 * HALFROAD,   MAX_Y                ],
-            [vert1 + 2 * HALFROAD,  horz2 + 2 * HALFROAD    ,  vert2 - 2 * HALFROAD,   MAX_Y                ],
-            [vert2 + 2 * HALFROAD,  horz2 + 2 * HALFROAD    ,  vert3 - 2 * HALFROAD,   MAX_Y                ],
-            [vert3 + 2 * HALFROAD,  horz2 + 2 * HALFROAD    ,  MAX_X               ,   MAX_Y                ]
+        var vert1 = (Math.random() * MAX_X / 7 + 1 * MAX_X / 5);
+        var vert2 = (Math.random() * MAX_X / 7 + 3 * MAX_X / 5);
+        var horz1 = (Math.random() * MAX_Y / 3 + 1 * MAX_Y / 3);
+        roads.push([1, vert1], [1, vert2], [0, horz1]);
+        walls.push(
+            [0                    + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+            [vert1 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+            [vert2 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+            [0                    + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
+            [vert1 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
+            [vert2 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ]
         );
     } else if (maptype === ICEID) {
     }
-    console.log(maptype);
 }
 
 function drawMap() {
     console.log("big");
-    ctx.fillStyle = "#00FF00";
+    ctx.fillStyle = "#008000";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
     console.log("pig");
     if (maptype === FORESTID) {
@@ -136,6 +111,18 @@ function drawMap() {
                 ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * HEIGHT, WIDTH, 2 * HALFROAD / MAX_Y * HEIGHT);
             }
         }
+
+        ctx.fillStyle = "#404040";
+        for (var i = 0; i < walls.length; i++) {
+            ctx.fillRect((walls[i][0]) / MAX_X * WIDTH, (walls[i][1]) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0]) / MAX_X * WIDTH, (walls[i][3] - walls[i][1]) / MAX_Y * HEIGHT);
+        }
+
+        ctx.fillStyle = "#808080";
+        for (var i = 0; i < walls.length; i++) {
+            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * WIDTH, (walls[i][1] + HALFROAD / 2) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * WIDTH, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * HEIGHT);
+        }
+
+        
     } else if (maptype === ROOFID) {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
@@ -156,6 +143,19 @@ function drawMap() {
                 ctx.fillRect(0, (roads[i][1] - HALFROAD) / MAX_Y * HEIGHT, WIDTH, 2 * HALFROAD / MAX_Y * HEIGHT);
             }
         }
+        
+        ctx.fillStyle = "#404040";
+        for (var i = 0; i < walls.length; i++) {
+            ctx.fillRect((walls[i][0]) / MAX_X * WIDTH, (walls[i][1]) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0]) / MAX_X * WIDTH, (walls[i][3] - walls[i][1]) / MAX_Y * HEIGHT);
+        }
+
+        ctx.fillStyle = "#808080";
+        for (var i = 0; i < walls.length; i++) {
+            ctx.fillRect((walls[i][0] + HALFROAD / 2) / MAX_X * WIDTH, (walls[i][1] + HALFROAD / 2) / MAX_Y * HEIGHT, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * WIDTH, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * HEIGHT);
+        }
+
+
+        
     } else if (maptype === ICEID) {
         ctx.fillStyle = "#00FFFF";
         ctx.fillRect(0, 0, WIDTH, HEIGHT);

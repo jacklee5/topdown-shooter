@@ -27,7 +27,7 @@ const getId = () => {
 //creates a game
 const createGame = () => {
     const id = getId();
-    const game = new Game(id);
+    const game = new Game(id, io);
     games[id] = game;
     return game;
 }
