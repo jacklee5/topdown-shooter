@@ -43,8 +43,6 @@ function createMap() {
             mapobjects.push(tree);
             mapobjects[i].x = (Math.random() * MAX_X);
             mapobjects[i].y = (Math.random() * MAX_Y);
-            console.log(Math.random());
-            console.log(Math.random());
         }
     } else if (maptype === CITYID) {
         var vert1 = (Math.random() * MAX_X / 7 + 2 * MAX_X / 7);

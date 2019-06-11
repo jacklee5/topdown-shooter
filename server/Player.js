@@ -10,13 +10,15 @@ class Player{
         this.name = name;
         this.roomId;
         this.game;
-        this.movementSpeed = 5;
+        this.movementSpeed = 25;
         this.id = id;
         this.rotation = 0;
         this.health = 100;
-        this.weapon = WEAPONS.PISTOL;
+        this.weapon = WEAPONS.AR;
         this.isPunching = false;
         this.socket;
+        this.attackCooldown = 0;
+        this.mouseDown = false;
 
         //animation stuff
         this.animating = false;
@@ -41,6 +43,7 @@ class Player{
         };
     }
     fire(){
+        this.mouseDown = true;
         if(this.weapon === WEAPONS.FISTS){
             if(this.animating) return;
             let rand = Math.floor(Math.random() * 2);
@@ -50,16 +53,20 @@ class Player{
                 this.animation = ANIMATIONS.PUNCH_LEFT;
             else
                 this.animation = ANIMATIONS.PUNCH_RIGHT;
-        }else if(this.weapon === WEAPONS.PISTOL){
+        }else if(this.attackCooldown === 0){
             this.game.bullets.push(new Bullet(this.x, this.y, this.rotation - Math.PI / 2, this.weapon, this.game, this.id));
+            this.attackCooldown = WEAPONS[this.weapon].cooldown;
         }
+    }
+    release(){
+        this.mouseDown = false;
     }
     update(){
         //movement
         let movementSpeed = this.movementSpeed;
         this.body.velocity = [0, 0];
         if((this.movement.up || this.movement.down) && (this.movement.left || this.movement.right))
-            movementSpeed *= ROOT2
+            movementSpeed /= ROOT2
         if(this.movement.up)
             this.body.velocity[1] = -movementSpeed;
         if(this.movement.down)
@@ -80,6 +87,7 @@ class Player{
             }
         }
 
+        //apply punch collisions
         if(this.isPunching){
             const HAND_X = Math.cos(HAND_ANGLE) * PLAYER_SIZE;
             const HAND_Y = -Math.sin(HAND_ANGLE) * PLAYER_SIZE;
@@ -111,6 +119,11 @@ class Player{
                 }
             }
         }
+
+        if(this.attackCooldown > 0)
+            this.attackCooldown--;
+        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0)
+            this.fire();
     }
     leaveGame(){
         const game = this.game;

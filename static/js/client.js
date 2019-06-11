@@ -205,6 +205,9 @@ window.addEventListener("keyup", e => {
 });
 window.addEventListener("mousedown", () => {
     socket.emit("fire");
+});
+window.addEventListener("mouseup", () => {
+    socket.emit("release")
 })
 
 //rotate player

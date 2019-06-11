@@ -78,6 +78,11 @@ io.on('connection', function (socket) {
         if(!player) return;
         player.fire();
     });
+    socket.on("release", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.release();
+    })
     socket.on("rotation", angle => {
         const player = players[socket.id];
         if(!player) return;

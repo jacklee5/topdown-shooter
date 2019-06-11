@@ -15,7 +15,15 @@ const CONSTANTS = {
         PISTOL: 1,
         1: {
             damage: 15,
-            speed: 1
+            speed: 3,
+            cooldown: 30
+        },
+        AR: 2,
+        2: {
+            damage: 12,
+            speed: 4,
+            cooldown: 10,
+            auto: true
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
@@ -239,6 +247,9 @@ window.addEventListener("keyup", e => {
 });
 window.addEventListener("mousedown", () => {
     socket.emit("fire");
+});
+window.addEventListener("mouseup", () => {
+    socket.emit("release")
 })
 
 //rotate player
