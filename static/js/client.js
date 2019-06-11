@@ -170,6 +170,12 @@ const drawPlayer = (player) => {
     }
 
     ctx.restore();
+    
+    for(let i = 0; i<players.length; i++){
+        const player = players[i];
+        ctx.font = '48px serif';
+        ctx.fillText(player.name, 10, 50);        
+    }
 }
 
 const drawBullet = (bullet) => {
