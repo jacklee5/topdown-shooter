@@ -43,6 +43,11 @@ class Player{
             left: false,
             right: false
         };
+        this.weapons = {
+            fist: false,
+            pistol: true,
+            ar: false
+        }
     }
     fire(){
         this.mouseDown = true;
@@ -113,7 +118,7 @@ class Player{
                 const player = this.game.players[i];
                 if(player.id === this.id) continue;
                 if(dist(x, y, player.x, player.y) < PLAYER_SIZE + HAND_SIZE){
-                    player.health -= WEAPONS[this.weapon].damage;
+                    player.health -= WEAPONS[player.weapon].damage;
                     this.isPunching = false;
                     if(player.health < 0){
                         this.kill(player);
@@ -126,6 +131,8 @@ class Player{
             this.attackCooldown--;
         if(WEAPONS[this.weapon].auto && this.attackCooldown === 0 && this.mouseDown)
             this.fire();
+    
+
     }
     kill(player){
         player.socket.emit("death");

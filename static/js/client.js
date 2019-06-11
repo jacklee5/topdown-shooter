@@ -171,6 +171,12 @@ const drawPlayer = (player) => {
     }
 
     ctx.restore();
+    
+    for(let i = 0; i<players.length; i++){
+        const player = players[i];
+        ctx.font = '48px serif';
+        ctx.fillText(player.name, 10, 50);        
+    }
 }
 
 const drawBullet = (bullet) => {
@@ -196,6 +202,10 @@ const draw = () => {
     movement.down = keyStates[KEYS.DOWN];
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
+    const weapons = {}
+    weapons.fist = keyStates[KEYS.FIST];
+    weapons.pistol = keyStates[KEYS.PISTOL];
+    weapons.ar = keyStates[KEYS.AR];
 
     //player loop thing
     //find out which person is the user
@@ -318,7 +328,7 @@ function drawMap() {
         ctx.fillStyle = "#FF8000";
         for (var i = 0; i < mapobjects.length; i++) {
             ctx.beginPath();
-            ctx.arc(mapobjects[i].x / MAX_X * width, mapobjects[i].y / MAX_Y * height, height / 20 / 100 * mapobjects[i].health, 0, 2 * Math.PI);
+            ctx.arc(mapobjects[i].x / MAX_X * width, mapobjects[i].y / MAX_Y * height, 20, 0, 2 * Math.PI);
             ctx.fill();
             console.log(mapobjects[i].x);
             console.log(mapobjects[i].y);
@@ -327,31 +337,31 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                doRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - 1.5 * HALFROAD), 0, 3 * HALFROAD, MAX_Y);
             }
             if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - 1.5 * HALFROAD), MAX_X, 3 * HALFROAD);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                doRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - HALFROAD), 0, 2 * HALFROAD, MAX_Y);
             }
             if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - HALFROAD), MAX_X, 2 * HALFROAD);
             }
         }
 
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
+            doRect((walls[i][0]), (walls[i][1]), (walls[i][2] - walls[i][0]), (walls[i][3] - walls[i][1]));
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
+            doRect((walls[i][0] + HALFROAD / 2), (walls[i][1] + HALFROAD / 2), (walls[i][2] - walls[i][0] - HALFROAD), (walls[i][3] - walls[i][1] - HALFROAD));
         }
 
         
@@ -359,35 +369,33 @@ function drawMap() {
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                doRect((roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 0, 3 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - 1.5 * HALFROAD), 0, 3 * HALFROAD, MAX_Y);
             }
             if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height, width, 3 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - 1.5 * HALFROAD), MAX_X, 3 * HALFROAD);
             }
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
-                doRect((roads[i][1] - HALFROAD) / MAX_X * width, 0, 2 * HALFROAD / MAX_X * width, height);
+                doRect((roads[i][1] - HALFROAD), 0, 2 * HALFROAD, MAX_Y);
             }
             if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - HALFROAD) / MAX_Y * height, width, 2 * HALFROAD / MAX_Y * height);
+                doRect(0, (roads[i][1] - HALFROAD), MAX_X, 2 * HALFROAD);
             }
         }
-        
+
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0]) / MAX_X * width, (walls[i][1]) / MAX_Y * height, (walls[i][2] - walls[i][0]) / MAX_X * width, (walls[i][3] - walls[i][1]) / MAX_Y * height);
+            doRect((walls[i][0]), (walls[i][1]), (walls[i][2] - walls[i][0]), (walls[i][3] - walls[i][1]));
         }
 
         ctx.fillStyle = "#808080";
         for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0] + HALFROAD / 2) / MAX_X * width, (walls[i][1] + HALFROAD / 2) / MAX_Y * height, (walls[i][2] - walls[i][0] - HALFROAD) / MAX_X * width, (walls[i][3] - walls[i][1] - HALFROAD) / MAX_Y * height);
+            doRect((walls[i][0] + HALFROAD / 2), (walls[i][1] + HALFROAD / 2), (walls[i][2] - walls[i][0] - HALFROAD), (walls[i][3] - walls[i][1] - HALFROAD));
         }
 
-
-        
     } else if (maptype === ICEID) {
         ctx.fillStyle = "#00FFFF";
         ctx.fillRect(0, 0, width, height);
@@ -400,9 +408,9 @@ function drawMap() {
 
 function realCoords(coord, axis) {
     if (axis === 0) {
-        return coord / width * MAX_X;
+        return coord;
     } else if (axis === 1) {
-        return coord / height * MAX_Y;
+        return coord;
     }
 }
 
@@ -414,79 +422,4 @@ function doRect(x,y,dx,dy) {
     ctx.fillRect(realCoords(x, 0) - user.x, realCoords(y, 1) - user.y, realCoords(dx, 0), realCoords(dy, 1));
 }
 
-// returns all rectangular areas where players cannot stand. first array is index of rect.
-// second array is info for each rect, 0 and 1 are first coord, 2 and 3 are second coord.
-function rectBoundaries() {
-    if (maptype === FORESTID) {
-        return [];
-    } else if (maptype === CITYID) {
-        return walls;
-    } else if (maptype === ROOFID) {
-        return [];
-    } else if (maptype === ICEID) {
-        return [];
-    }
-}
 
-// returns all circular areas where players cannot stand. first array is index of tree.
-// second array is info for each tree, 0 is x, 1 is y, 3 is radius.
-function circleBoundaries() {
-    if (maptype === FORESTID) {
-        circles = [];
-        for (var i = 0; i < mapobjects.length; i++) {
-            circles[i] = [
-                mapobjects[i].x / MAX_X * width,
-                mapobjects[i].y / MAX_Y * height,
-                height / 20 / 100 * mapobjects[i].health
-            ];
-        }
-    } else if (maptype === CITYID) {
-        return [];
-    } else if (maptype === ROOFID) {
-        return [];
-    } else if (maptype === ICEID) {
-        return [];
-    }
-}
-
-// returns all circular areas where players die. first array is index of tree.
-// second array is info for each tree, 0 is x, 1 is y, 3 is radius.
-
-function rectDeath() {
-    if (maptype == FORESTID) {
-        return [];
-    } else if (maptype == CITYID) {
-        return [];
-    } else if (maptype == ROOFID) {
-        rects = [];
-        for (var i = 0; i < roads.length; i++) {
-            if (roads[i][0] === 1) {
-                rects[i] = [
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_X * width, 
-                    0, 
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_X * width + 3 * HALFROAD / MAX_X * width, 
-                    height
-                ];
-            }
-            if (roads[i][0] === 0) {
-                rects[i] = [
-                    0,
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height,
-                    width,
-                    (roads[i][1] - 1.5 * HALFROAD) / MAX_Y * height + 3 * HALFROAD / MAX_Y * height         
-                ];
-            }
-        }
-    } else if (maptype == ICEID) {
-        return [];
-    }
-}
-
-// returns all areas where you don't die in ice map.
-// if empty array, it is not ice map.
-function circleNotDeath() {
-    if (maptype == ICEID) {
-        return [width / 2, height / 2, height / 3];
-    }
-    else return [];
-}
