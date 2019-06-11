@@ -357,6 +357,7 @@ window.addEventListener("resize", () => {
 
 document.getElementById("respawn-button").addEventListener("click", () => {
     socket.emit("respawn");
+    changePage(PAGES.GAME);
 })
 
 //listen for state change
