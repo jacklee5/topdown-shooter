@@ -1,11 +1,21 @@
 body {
     background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet); 
     font-family: "Comic Sans MS", cursive, sans-serif;
+    margin: 0;
+}
+
+.page{
+    display: none;
+}
+.start{
+    display: block;
 }
 
 #title{
     margin-bottom: 0;
+    font-size: 80px;
 }
+
 
 #top_page_text{
     text-align: center;
@@ -22,15 +32,6 @@ body {
     text-align: center;
 }
 
-body{
-    margin: 0;
-}
-.page{
-    display: none;
-}
-.start{
-    display: block;
-}
 #game-info{
     display: none;
     position: fixed;
