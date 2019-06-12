@@ -313,7 +313,6 @@ const draw = () => {
     if(user)
         drawMap();
 
-
     //draw players
     if(user){
         for(let i = 0; i < players.length; i++){
