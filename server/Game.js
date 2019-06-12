@@ -184,6 +184,7 @@ class Game{
     }
     addPlayer(player){
         this.players.push(player);
+        this.world.addBody(player.body);
         player.roomId = this.id;
         player.game = this;
         player.x = MAX_X / 2;
