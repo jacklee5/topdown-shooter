@@ -35,15 +35,19 @@ class Game{
 
         this.addWorldBounds();
     }
+
+    rand() {
+        return Math.random();
+    }
+
     createMap() {
-        console.log(FORESTID);
         this.maptype = Math.floor((Math.random() * 4));
         this.maptype = CITYID;
         if (this.maptype === FORESTID) {
-            for (var i = 0; i < MAX_TREES; i++) {
+            for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push(TREE);
-                this.mapobjects[i].x = (Math.random() * MAX_X);
-                this.mapobjects[i].y = (Math.random() * MAX_Y);
+                this.mapobjects[i].x = (this.rand() * MAX_X);
+                this.mapobjects[i].y = (this.rand() * MAX_Y);
             }
         } else if (this.maptype === CITYID) {
             var vert1 = (Math.random() * MAX_X / 7 + 1 * MAX_X / 5);

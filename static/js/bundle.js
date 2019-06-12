@@ -284,6 +284,7 @@ const draw = () => {
     if(user)
         drawMap();
 
+
     //draw bullets
     for(let i = 0; i < bullets.length; i++){
         drawBullet(bullets[i]);
@@ -388,15 +389,12 @@ socket.on("death", () => {
 function drawMap() {
     ctx.fillStyle = "#008000";
     ctx.fillRect(0, 0, width, height);
-    console.log(maptype);
     if (maptype === FORESTID) {
         ctx.fillStyle = "#FF8000";
         for (var i = 0; i < mapobjects.length; i++) {
             ctx.beginPath();
-            ctx.arc(mapobjects[i].x / MAX_X * width, mapobjects[i].y / MAX_Y * height, 20, 0, 2 * Math.PI);
+            ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, 20, 0, 2 * Math.PI);
             ctx.fill();
-            console.log(mapobjects[i].x);
-            console.log(mapobjects[i].y);
         }
     } else if (maptype === CITYID) {
         ctx.fillStyle = "#A0A0A0";
@@ -466,7 +464,7 @@ function drawMap() {
         ctx.fillRect(0, 0, width, height);
         ctx.fillStyle = "#80FFFF";
         ctx.beginPath();
-        ctx.arc(width / 2, height / 2, height / 3, 0, 2 * Math.PI);
+        ctx.arc(width / 2 - user.x, height / 2 - user.y, MAX_Y / 3, 0, 2 * Math.PI);
         ctx.fill();
     }
 }
@@ -480,10 +478,6 @@ function realCoords(coord, axis) {
 }
 
 function doRect(x,y,dx,dy) {
-    console.log(realCoords(x, 0));
-    console.log(realCoords(y, 1));
-    console.log(realCoords(dx, 0));
-    console.log(realCoords(dy, 1));
     ctx.fillRect(realCoords(x, 0) - user.x + width / 2, realCoords(y, 1) - user.y + height / 2, realCoords(dx, 0), realCoords(dy, 1));
 }
 
