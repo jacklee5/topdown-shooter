@@ -2,7 +2,7 @@ const MAX_PLAYERS = 20;
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 
-const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, TREE, CAR, SNAKE, PLAYER_SIZE, ROLES } = require("../shared/constants");
+const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, PLAYER_SIZE, ROLES, GAME_LENGTH, MOVEMENT_SPEED } = require("../shared/constants");
 
 class Game{
     constructor(id, io){
@@ -23,6 +23,8 @@ class Game{
         this.hazards = [];
         this.roads = [];
 
+        this.timeRemaining = GAME_LENGTH;
+
         this.createMap();
         this.map = {
             notholes: this.notholes,
@@ -37,6 +39,7 @@ class Game{
         this.world.on("beginContact", event => {
             const a = event.bodyA;
             const b = event.bodyB;
+            if(a.role === ROLES.BORDER || b.role === ROLES.BORDER) return;
             if(!(a.role === ROLES.BULLET || b.role === ROLES.BULLET)) return;
             let player;
             let bullet;
@@ -53,8 +56,9 @@ class Game{
             }else if(b.role === ROLES.BULLET){
                 bullet = b.parent;
             }
-            if(player === bullet.origin) return;
             if(player){
+                if(player === bullet.origin) return;
+                if(player.deactivated) return;
                 player.health -= bullet.damage;
                 if(player.health < 0){
                     bullet.origin.kill(player);
@@ -69,8 +73,7 @@ class Game{
     }
 
     createMap() {
-        this.maptype = Math.floor((Math.random() * 4));
-        this.maptype = FORESTID;
+        this.maptype = Math.floor((Math.random() * 3));
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
@@ -92,20 +95,22 @@ class Game{
                 [vert1 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
                 [vert2 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ]
             );
-        } else if (this.maptype === ROOFID) {
-            var vert1 = (Math.random() * MAX_X / 7 + 1 * MAX_X / 5);
-            var vert2 = (Math.random() * MAX_X / 7 + 3 * MAX_X / 5);
-            var horz1 = (Math.random() * MAX_Y / 3 + 1 * MAX_Y / 3);
-            this.roads.push([1, vert1], [1, vert2], [0, horz1]);
-            this.walls.push(
-                [0                    + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
-                [vert1 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
-                [vert2 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
-                [0                    + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
-                [vert1 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
-                [vert2 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ]
-            );
-        } else if (this.maptype === ICEID) {
+        } 
+        // else if (this.maptype === ROOFID) {
+        //     var vert1 = (Math.random() * MAX_X / 7 + 1 * MAX_X / 5);
+        //     var vert2 = (Math.random() * MAX_X / 7 + 3 * MAX_X / 5);
+        //     var horz1 = (Math.random() * MAX_Y / 3 + 1 * MAX_Y / 3);
+        //     this.roads.push([1, vert1], [1, vert2], [0, horz1]);
+        //     this.walls.push(
+        //         [0                    + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+        //         [vert1 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+        //         [vert2 + 2 * HALFROAD + HALFROAD / 2  , 0                    + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , horz1 - 2 * HALFROAD - HALFROAD / 2 ],
+        //         [0                    + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert1 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
+        //         [vert1 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , vert2 - 2 * HALFROAD - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ],
+        //         [vert2 + 2 * HALFROAD + HALFROAD / 2  , horz1 + 2 * HALFROAD + HALFROAD / 2 , MAX_X                - HALFROAD / 2 , MAX_Y                - HALFROAD / 2 ]
+        //     );
+        // } 
+        else if (this.maptype === ICEID) {
 
         }
 
@@ -150,49 +155,54 @@ class Game{
         }
     }
     addWorldBounds(){
+        const wallWidth = 1000;
         //left wall
         const lBody = new p2.Body({
             mass: 0,
-            position: [0, MAX_Y / 2]
+            position: [-wallWidth / 2, MAX_Y / 2]
         });
         const lShape = new p2.Box({
-            width: 1,
+            width: wallWidth,
             height: MAX_Y
         });
         lBody.addShape(lShape);
+        lBody.role = ROLES.BORDER;
         this.world.addBody(lBody);
         //right wall
         const rBody = new p2.Body({
             mass: 0,
-            position: [MAX_X, MAX_Y / 2]
+            position: [MAX_X + wallWidth / 2, MAX_Y / 2]
         });
         const rShape = new p2.Box({
-            width: 1,
+            width: wallWidth,
             height: MAX_Y
         });
         rBody.addShape(rShape);
+        rBody.role = ROLES.BORDER;
         this.world.addBody(rBody);
         //top wall
         const tBody = new p2.Body({
             mass: 0,
-            position: [MAX_X / 2, 0]
+            position: [MAX_X / 2, -wallWidth / 2]
         });
         const tShape = new p2.Box({
             width: MAX_X,
-            height: 1
+            height: wallWidth
         });
         tBody.addShape(tShape);
+        tBody.role = ROLES.BORDER;
         this.world.addBody(tBody);
         //bottom wall
         const bBody = new p2.Body({
             mass: 0,
-            position: [MAX_X / 2, MAX_Y]
+            position: [MAX_X / 2, MAX_Y + wallWidth / 2]
         });
         const bShape = new p2.Box({
             width: MAX_X,
-            height: 1
+            height: wallWidth
         });
         bBody.addShape(bShape);
+        bBody.role = ROLES.BORDER;
         this.world.addBody(bBody);
     }
     updateLeaderboard(){
@@ -215,6 +225,10 @@ class Game{
         this.world.addBody(player.body);
         player.roomId = this.id;
         player.game = this;
+        this.spawnPlayer(player);
+        this.updateLeaderboard();
+    }
+    spawnPlayer(player){
         if(this.maptype === ICEID){
             let r = Math.random() * (MAX_X / 3);
             let t = Math.random() * 2 * Math.PI;
@@ -224,9 +238,14 @@ class Game{
             player.x = PLAYER_SIZE + Math.random() * (MAX_X - PLAYER_SIZE * 2);
             player.y = PLAYER_SIZE + Math.random() * (MAX_Y - PLAYER_SIZE * 2);
         }
-        this.updateLeaderboard();
+        console.log(player.x + " " + player.y);
     }
     tick(io){
+        if(this.timeRemaining === 0){
+            this.io.in(this.id).emit("game over");
+        }else{
+            this.timeRemaining--;
+        }
         //update players
         for(let i = 0; i < this.players.length; i++)
             this.players[i].update();
@@ -241,6 +260,7 @@ class Game{
         const result = {};
         result.players = this.players.map(x => x.toObject());
         result.bullets = this.bullets.map(x => x.toObject());
+        result.timeRemaining = this.timeRemaining / 60;
         return result;
     }
 

@@ -58,7 +58,7 @@ io.on('connection', function (socket) {
 
         console.log(`[DEBUG] user ${username} in joined room ${roomId}`)
         
-        socket.emit("game found", roomId)
+        socket.emit("game found", roomId);
     });
     socket.on("movement", movement => {
         const player = players[socket.id];
@@ -86,11 +86,17 @@ io.on('connection', function (socket) {
         if(!player) return;
         player.activate();
         player.health = 100;
+        player.game.spawnPlayer(player);
     })
     socket.on("rotation", angle => {
         const player = players[socket.id];
         if(!player) return;
         player.rotation = angle;
+    });
+    socket.on("reload", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.reload();
     })
 });
 
@@ -100,7 +106,7 @@ setInterval(() => {
         games[i].tick(io);
         io.in(i).emit("state", games[i].toObject());
     }
-}, 1 / 60)
+}, 1000 / 60)
 
 http.listen(3000 || process.env.PORT, function () {
     console.log('listening on *:3000');

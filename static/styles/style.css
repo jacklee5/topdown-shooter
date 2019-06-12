@@ -11,6 +11,9 @@ body {
 .start{
     display: block;
 }
+.sprite{
+    display: none;
+}
 
 #title{
     margin-bottom: 0;

@@ -1,4 +1,4 @@
-const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE, GAME_MODES, ICEID, MAX_X, MAX_Y, ROLES } = require("../shared/constants.js");
+const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE, GAME_MODES, ICEID, MAX_X, MAX_Y, ROLES, MOVEMENT_SPEED, RELOAD_TIME } = require("../shared/constants.js");
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 const dist = (x1, y1, x2, y2) => {
@@ -10,11 +10,18 @@ class Player{
         this.name = name;
         this.roomId;
         this.game;
-        this.movementSpeed = 25;
+        this.movementSpeed = MOVEMENT_SPEED;
         this.id = id;
         this.rotation = 0;
         this.health = 100;
-        this.weapon = WEAPONS.AR;
+
+        this.inventory = [{
+            weapon: WEAPONS.AR,
+            magazine: WEAPONS[WEAPONS.AR].magazine
+        }];
+        this.weapon = this.inventory[0].weapon;
+        this.magazine = this.inventory[0].magazine;
+
         this.isPunching = false;
         this.socket;
         this.attackCooldown = 0;
@@ -62,9 +69,13 @@ class Player{
                 this.animation = ANIMATIONS.PUNCH_LEFT;
             else
                 this.animation = ANIMATIONS.PUNCH_RIGHT;
-        }else if(this.attackCooldown === 0){
-            this.game.bullets.push(new Bullet(this.x, this.y, this.rotation - Math.PI / 2, this.weapon, this.game, this));
+        }else if(this.attackCooldown === 0 && this.magazine > 0){
+            let r = this.rotation - Math.PI / 2;
+            let x = this.x + Math.cos(r) * WEAPONS[this.weapon].length;
+            let y = this.y + Math.sin(r) * WEAPONS[this.weapon].length;
+            this.game.bullets.push(new Bullet(x, y, r, this.weapon, this.game, this));
             this.attackCooldown = WEAPONS[this.weapon].cooldown;
+            this.magazine--;
         }
     }
     release(){
@@ -154,6 +165,11 @@ class Player{
         this.game.updateLeaderboard();
         player.deactivate();
     }
+    reload(){
+        setTimeout(() => {
+            this.magazine = 30;
+        }, RELOAD_TIME * 1000)
+    }
     deactivate(){
         const players = this.game.players;
         for(let i = 0; i < players.length; i++){
@@ -162,12 +178,14 @@ class Player{
                 break;
             }
         }
+        this.deactivated = true;
         this.body.shapes[0].sensor = true;
     }
     activate(){
         const players = this.game.players;
         players.push(this);
         this.body.shapes[0].sensor = false;
+        this.deactivated = false;
     }
     leaveGame(){
         const game = this.game;
@@ -197,7 +215,9 @@ class Player{
             weapon: this.weapon,
             animating: this.animating,
             animationProgress: this.animationProgress,
-            animation: this.animation
+            animation: this.animation,
+            magazine: this.magazine,
+            kills: kills
         }
     }
     get x(){
