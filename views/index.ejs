@@ -35,8 +35,27 @@
             </div>
         </div>
         <!-- death screen -->
-        <div class = "page">
-            you are death
+        <div class = "page" id = "death_screen">
+            <h1 id = "death_message">You died!</h1>
+            <h2 id = "rank_message">Rank: 0th Place</h2>
+            <table id = "results_table">
+                <tr>
+                    <th>Kills: </th>
+                    <th>-1</th>
+                </tr>
+                <tr>
+                    <th>Damage Dealt:   </th>
+                    <th>    -1</th>
+                </tr>
+                <tr>
+                    <th>Damage Taken:   </th>
+                    <th>    -1</th>
+                </tr>
+                <tr>
+                    <th>Time Survived:  </th>
+                    <th>    -1:00</th>
+                </tr>
+            </table>
             <button id = "respawn-button">Respawn</button>
         </div>
         <script src = "/socket.io/socket.io.js"></script>
