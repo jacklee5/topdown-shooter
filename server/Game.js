@@ -42,7 +42,7 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 4));
-        this.maptype = CITYID;
+        this.maptype = FORESTID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push(TREE);
@@ -79,7 +79,45 @@ class Game{
 
         }
 
-        
+        //do the physics stuff
+        const rectBounds = this.rectBoundaries();
+        for(let i = 0; i < rectBounds.length; i++){
+            const x1 = rectBounds[i][0];
+            const y1 = rectBounds[i][1];
+            const x2 = rectBounds[i][2];
+            const y2 = rectBounds[i][3];
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const cx = x1 + dx / 2;
+            const cy = y1 + dy / 2;
+            const body = new p2.Body({
+                mass: 0,
+                position: [cx, cy]
+            });
+            const shape = new p2.Box({
+                width: dx,
+                height: dy
+            });
+            
+            body.addShape(shape);
+            this.world.addBody(body);
+        }
+
+        const circleBounds = this.circleBoundaries();
+        for(let i = 0; i < circleBounds.length; i++){
+            const x = circleBounds[i][0];
+            const y = circleBounds[i][1];
+            const r = circleBounds[i][2];
+            const body = new p2.Body({
+                mass: 0,
+                position: [x, y]
+            });
+            const shape = new p2.Circle({
+                radius: 4
+            });
+            body.addShape(shape);
+            this.world.addBody(body);
+        }
     }
     addWorldBounds(){
         //left wall
@@ -185,7 +223,7 @@ class Game{
     // second array is info for each tree, 0 is x, 1 is y, 3 is radius.
     circleBoundaries() {
         if (this.maptype === FORESTID) {
-            circles = [];
+            let circles = [];
             for (var i = 0; i < this.mapobjects.length; i++) {
                 circles[i] = [
                     this.mapobjects[i].x,
