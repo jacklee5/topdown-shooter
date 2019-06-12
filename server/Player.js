@@ -189,6 +189,7 @@ class Player{
             inv[i].magazine = WEAPONS[inv[i].weapon].magazine;
         }
         console.log(inv);
+        this.mouseDown = false;
     }
     deactivate(){
         const players = this.game.players;
