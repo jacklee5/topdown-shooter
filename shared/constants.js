@@ -27,10 +27,8 @@ const CONSTANTS = {
     BULLET_SIZE: 3,
     BULLET_DURATION: 360,
     GAME_LENGTH: 5 * 60 * 60,
-    //this is the only one in seconds!
-    RELOAD_TIME: 2,
+    //NOTE: reload time is in seconds!
     //enum for weapons, similar to below
-    //TODO: bullet spread
     WEAPONS: {
         FISTS: 0,
         0: {
@@ -42,7 +40,9 @@ const CONSTANTS = {
             speed: 2000,
             cooldown: 5,
             length: 20,
-            magazine: 15
+            magazine: 15,
+            spread: 20,
+            reload: 1
         },
         AR: 2,
         2: {
@@ -51,7 +51,9 @@ const CONSTANTS = {
             cooldown: 5,
             auto: true,
             length: 34,
-            magazine: 30
+            magazine: 30,
+            spread: 8,
+            reload: 2
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation

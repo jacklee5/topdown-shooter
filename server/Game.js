@@ -74,6 +74,7 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 3));
+        this.maptype = FORESTID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
@@ -238,7 +239,6 @@ class Game{
             player.x = PLAYER_SIZE + Math.random() * (MAX_X - PLAYER_SIZE * 2);
             player.y = PLAYER_SIZE + Math.random() * (MAX_Y - PLAYER_SIZE * 2);
         }
-        console.log(player.x + " " + player.y);
     }
     tick(io){
         if(this.timeRemaining === 0){

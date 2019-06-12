@@ -28,10 +28,8 @@ const CONSTANTS = {
     BULLET_SIZE: 3,
     BULLET_DURATION: 360,
     GAME_LENGTH: 5 * 60 * 60,
-    //this is the only one in seconds!
-    RELOAD_TIME: 2,
+    //NOTE: reload time is in seconds!
     //enum for weapons, similar to below
-    //TODO: bullet spread
     WEAPONS: {
         FISTS: 0,
         0: {
@@ -43,7 +41,9 @@ const CONSTANTS = {
             speed: 2000,
             cooldown: 5,
             length: 20,
-            magazine: 15
+            magazine: 15,
+            spread: 20,
+            reload: 1
         },
         AR: 2,
         2: {
@@ -52,7 +52,9 @@ const CONSTANTS = {
             cooldown: 5,
             auto: true,
             length: 34,
-            magazine: 30
+            magazine: 30,
+            spread: 8,
+            reload: 2
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
@@ -132,7 +134,7 @@ const changePage = (id) => {
         pages[i].style.display = "none";
     }
     pages[id].style.display = "block";
-
+    currentPage = id;
     //do page-specific things
     if(id === PAGES.GAME){
         document.body.style.overflow = "hidden";
@@ -313,7 +315,6 @@ const draw = () => {
     if(user)
         drawMap();
 
-
     //draw players
     if(user){
         for(let i = 0; i < players.length; i++){
@@ -362,6 +363,9 @@ window.addEventListener("keydown", e => {
     }
     if(e.keyCode === KEYS.RELOAD){
         socket.emit("reload");
+        const el = document.getElementById("message");
+        el.style.display = "block";
+        el.textContent = "reloading...";
     }
 });
 window.addEventListener("keyup", e => {
@@ -372,10 +376,19 @@ window.addEventListener("keyup", e => {
     }
 });
 window.addEventListener("mousedown", () => {
-    socket.emit("fire");
+    if(currentPage === PAGES.GAME)
+        socket.emit("fire");
 });
 window.addEventListener("mouseup", () => {
-    socket.emit("release")
+    if(currentPage === PAGES.GAME)
+        socket.emit("release")
+});
+window.addEventListener("wheel", (e) => {
+    if(e.deltaY < 0){
+        socket.emit("previous weapon");
+    }else{
+        socket.emit("next weapon");
+    }
 })
 
 //rotate player
@@ -425,6 +438,9 @@ socket.on("death", () => {
 });
 socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";
+});
+socket.on("done reloading", () => {
+    document.getElementById("message").style.display = "none";
 })
 
 function drawBackground(){

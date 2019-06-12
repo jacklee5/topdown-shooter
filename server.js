@@ -84,9 +84,7 @@ io.on('connection', function (socket) {
     socket.on("respawn", () => {
         const player = players[socket.id];
         if(!player) return;
-        player.activate();
-        player.health = 100;
-        player.game.spawnPlayer(player);
+        player.respawn();
     })
     socket.on("rotation", angle => {
         const player = players[socket.id];
@@ -97,6 +95,16 @@ io.on('connection', function (socket) {
         const player = players[socket.id];
         if(!player) return;
         player.reload();
+    });
+    socket.on("next weapon", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.nextWeapon();
+    });
+    socket.on("previous weapon", () => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.previousWeapon();
     })
 });
 

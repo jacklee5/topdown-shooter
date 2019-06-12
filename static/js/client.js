@@ -52,7 +52,7 @@ const changePage = (id) => {
         pages[i].style.display = "none";
     }
     pages[id].style.display = "block";
-
+    currentPage = id;
     //do page-specific things
     if(id === PAGES.GAME){
         document.body.style.overflow = "hidden";
@@ -281,6 +281,9 @@ window.addEventListener("keydown", e => {
     }
     if(e.keyCode === KEYS.RELOAD){
         socket.emit("reload");
+        const el = document.getElementById("message");
+        el.style.display = "block";
+        el.textContent = "reloading...";
     }
 });
 window.addEventListener("keyup", e => {
@@ -291,10 +294,19 @@ window.addEventListener("keyup", e => {
     }
 });
 window.addEventListener("mousedown", () => {
-    socket.emit("fire");
+    if(currentPage === PAGES.GAME)
+        socket.emit("fire");
 });
 window.addEventListener("mouseup", () => {
-    socket.emit("release")
+    if(currentPage === PAGES.GAME)
+        socket.emit("release")
+});
+window.addEventListener("wheel", (e) => {
+    if(e.deltaY < 0){
+        socket.emit("previous weapon");
+    }else{
+        socket.emit("next weapon");
+    }
 })
 
 //rotate player
@@ -344,6 +356,9 @@ socket.on("death", () => {
 });
 socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";
+});
+socket.on("done reloading", () => {
+    document.getElementById("message").style.display = "none";
 })
 
 function drawBackground(){

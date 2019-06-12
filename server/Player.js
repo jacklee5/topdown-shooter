@@ -15,12 +15,14 @@ class Player{
         this.rotation = 0;
         this.health = 100;
 
-        this.inventory = [{
-            weapon: WEAPONS.AR,
-            magazine: WEAPONS[WEAPONS.AR].magazine
-        }];
-        this.weapon = this.inventory[0].weapon;
-        this.magazine = this.inventory[0].magazine;
+        let inv = [WEAPONS.PISTOL, WEAPONS.AR]
+        this.inventory = inv.map(x => {
+            return {
+                weapon: x,
+                magazine: WEAPONS[x].magazine
+            }
+        });
+        this.currentWeapon = 0;
 
         this.isPunching = false;
         this.socket;
@@ -70,7 +72,8 @@ class Player{
             else
                 this.animation = ANIMATIONS.PUNCH_RIGHT;
         }else if(this.attackCooldown === 0 && this.magazine > 0){
-            let r = this.rotation - Math.PI / 2;
+            const spread = WEAPONS[this.weapon].spread * 0.01;
+            let r = this.rotation - Math.PI / 2 + (Math.random() * spread - spread / 2);
             let x = this.x + Math.cos(r) * WEAPONS[this.weapon].length;
             let y = this.y + Math.sin(r) * WEAPONS[this.weapon].length;
             this.game.bullets.push(new Bullet(x, y, r, this.weapon, this.game, this));
@@ -168,7 +171,24 @@ class Player{
     reload(){
         setTimeout(() => {
             this.magazine = 30;
-        }, RELOAD_TIME * 1000)
+            this.socket.emit("done reloading");
+        }, WEAPONS[this.weapon].reload * 1000)
+    }
+    nextWeapon(){
+        this.currentWeapon = (this.currentWeapon + 1) % this.inventory.length;
+    }
+    previousWeapon(){
+        this.currentWeapon = (this.currentWeapon - 1 + this.inventory.length) % this.inventory.length;
+    }
+    respawn(){
+        this.activate();
+        this.health = 100;
+        this.game.spawnPlayer(this);
+        const inv = this.inventory;
+        for(let i = 0; i < inv.length; i++){
+            inv[i].magazine = WEAPONS[inv[i].weapon].magazine;
+        }
+        console.log(inv);
     }
     deactivate(){
         const players = this.game.players;
@@ -217,7 +237,7 @@ class Player{
             animationProgress: this.animationProgress,
             animation: this.animation,
             magazine: this.magazine,
-            kills: kills
+            kills: this.kills
         }
     }
     get x(){
@@ -231,6 +251,15 @@ class Player{
     }
     set y(y){
         this.body.position[1] = y;
+    }
+    get weapon(){
+        return this.inventory[this.currentWeapon].weapon;
+    }
+    get magazine(){
+        return this.inventory[this.currentWeapon].magazine;
+    }
+    set magazine(x){
+        this.inventory[this.currentWeapon].magazine = x;
     }
 }
 module.exports = Player;

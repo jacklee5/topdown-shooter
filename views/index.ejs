@@ -25,9 +25,9 @@
             </div>  
         </div> 
         <!-- game -->
-        <div class = "page">
+        <div class = "page" id = "game-page">
             <canvas id = "game"></canvas>
-            <div id = "game-info">
+            <div id = "game-info" style = "pointer-events: none">
                 <center>
                     <span id = "map-name">Forest</span> - <span id = "game-mode">Deathmatch</span>
                 </center>
@@ -37,8 +37,12 @@
                 </center>
             </div>
             <!-- ammo indicator -->
-            <div style = "position:fixed; left: 50%; bottom: 88px; transform: translateX(-50%); text-align: center; font-size: 24px">
-                <img src = "/static/img/bullet.png" id = "bullet-sprite" style = "height: 24px;position:relative;top:2px"> <span id = "ammo-amount" style = "line-height: 24px">30</span>
+            <div style = "position:fixed; left: 50%; bottom: 88px; transform: translateX(-50%); text-align: center; font-size: 24px; pointer-events: none">
+                <img src = "/static/img/bullet.png" id = "bullet-sprite" style = "height: 24px;position:relative;top:2px;"> <span id = "ammo-amount" style = "line-height: 24px">30</span>
+            </div>
+            <!-- message -->
+            <div style = "position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; display: none; pointer-events: none" id = "message">
+                reloading...
             </div>
         </div>
         <!-- death screen -->

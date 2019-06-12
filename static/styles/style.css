@@ -11,8 +11,8 @@ body {
 .start{
     display: block;
 }
-.sprite{
-    display: none;
+#game-page *::selection{
+    background: transparent;
 }
 
 #title{
