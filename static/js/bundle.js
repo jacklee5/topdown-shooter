@@ -485,7 +485,10 @@ socket.on("leaderboard", data => {
     }
 });
 socket.on("death", () => {
+    
     changePage(PAGES.GAMEOVER);
+    document.getElementById("kill_count").textContent = user.kills;
+    
 });
 socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";
