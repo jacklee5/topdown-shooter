@@ -170,7 +170,7 @@ class Player{
     }
     reload(){
         setTimeout(() => {
-            this.magazine = 30;
+            this.magazine = WEAPONS[this.weapon].magazine;
             this.socket.emit("done reloading");
         }, WEAPONS[this.weapon].reload * 1000)
     }
@@ -243,7 +243,8 @@ class Player{
             animation: this.animation,
             magazine: this.magazine,
             kills: this.kills,
-            inventory: this.inventory
+            inventory: this.inventory,
+            currentWeapon: this.currentWeapon
         }
     }
     get x(){
