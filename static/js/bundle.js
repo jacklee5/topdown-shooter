@@ -134,7 +134,7 @@ const changePage = (id) => {
         pages[i].style.display = "none";
     }
     pages[id].style.display = "block";
-    currentPage = id;
+
     //do page-specific things
     if(id === PAGES.GAME){
         document.body.style.overflow = "hidden";
@@ -383,9 +383,6 @@ window.addEventListener("keydown", e => {
     }
     if(e.keyCode === KEYS.RELOAD){
         socket.emit("reload");
-        const el = document.getElementById("message");
-        el.style.display = "block";
-        el.textContent = "reloading...";
     }
 });
 window.addEventListener("keyup", e => {
@@ -396,8 +393,7 @@ window.addEventListener("keyup", e => {
     }
 });
 window.addEventListener("mousedown", () => {
-    if(currentPage === PAGES.GAME)
-        socket.emit("fire");
+    socket.emit("fire");
 });
 window.addEventListener("mouseup", () => {
     if(currentPage === PAGES.GAME)
@@ -463,11 +459,9 @@ socket.on("leaderboard", data => {
 socket.on("death", () => {
     changePage(PAGES.GAMEOVER);
 });
+
 socket.on("game over", () => {
-    document.getElementById("game-info").style.display = "block";
-});
-socket.on("done reloading", () => {
-    document.getElementById("message").style.display = "none";
+    document.getElementById("game-info").style.display;
 })
 
 function drawBackground(){
