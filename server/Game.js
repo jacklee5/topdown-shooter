@@ -113,7 +113,7 @@ class Game{
                 position: [x, y]
             });
             const shape = new p2.Circle({
-                radius: 4
+                radius: r
             });
             body.addShape(shape);
             this.world.addBody(body);
