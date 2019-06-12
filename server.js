@@ -116,11 +116,18 @@ io.on('connection', function (socket) {
         if(!player) return;
         player.switchWeapon(x);
     });
+    socket.on("game over", () => {
+        console.log("game over")
+    })
 });
 
 //main loop
 setInterval(() => {
     for(let i in games){
+        if(games[i].finished) {
+            delete games[i];
+            continue;
+        }
         games[i].tick(io);
         io.in(i).emit("state", games[i].toObject());
     }

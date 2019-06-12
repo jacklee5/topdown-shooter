@@ -394,6 +394,7 @@ const draw = () => {
 
     //update time
     if(timeRemaining){
+        timeRemaining  = timeRemaining < 0 ? 0 : timeRemaining;
         const minutes = Math.floor(timeRemaining / 60);
         const seconds = Math.floor(timeRemaining % 60) + "";
         document.getElementById("time-remaining").textContent = `${minutes}:${seconds.padStart(2, "0")}`
@@ -500,6 +501,8 @@ socket.on("death", () => {
 });
 socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";
+    document.getElementById("map-info").style.display = "none";
+    document.getElementById("game-over-message").style.display = "block";
 });
 socket.on("done reloading", () => {
     document.getElementById("message").style.display = "none";

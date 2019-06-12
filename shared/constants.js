@@ -26,7 +26,7 @@ const CONSTANTS = {
     FIST_REACH: 15,
     BULLET_SIZE: 3,
     BULLET_DURATION: 360,
-    GAME_LENGTH: .05 * 60 * 60,
+    GAME_LENGTH: 5 * 60 * 60,
     //NOTE: reload time is in seconds!
     //enum for weapons, similar to below
     WEAPONS: {

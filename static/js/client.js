@@ -301,6 +301,7 @@ const draw = () => {
 
     //update time
     if(timeRemaining){
+        timeRemaining  = timeRemaining < 0 ? 0 : timeRemaining;
         const minutes = Math.floor(timeRemaining / 60);
         const seconds = Math.floor(timeRemaining % 60) + "";
         document.getElementById("time-remaining").textContent = `${minutes}:${seconds.padStart(2, "0")}`
