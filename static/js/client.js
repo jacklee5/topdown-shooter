@@ -329,7 +329,7 @@ function drawMap() {
         ctx.fillStyle = "#FF8000";
         for (var i = 0; i < mapobjects.length; i++) {
             ctx.beginPath();
-            ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, 20, 0, 2 * Math.PI);
+            ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 5, 0, 2 * Math.PI);
             ctx.fill();
         }
     } else if (maptype === CITYID) {
