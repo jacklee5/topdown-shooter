@@ -31,7 +31,7 @@ class Bullet{
     }
     update(){
         this.duration++;
-        if(this.lifespan === BULLET_DURATION)
+        if(this.duration === BULLET_DURATION)
             this.destroy();
     }
     destroy(){
@@ -41,6 +41,7 @@ class Bullet{
                 bullets.splice(i, 1);
             }
         }
+        this.game.world.removeBody(this.body);
     }
     get x(){
         return this.body.position[0];

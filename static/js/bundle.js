@@ -1,13 +1,14 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const CONSTANTS = { 
+    MOVEMENT_SPEED: 200,
     PLAYER_SIZE: 15,
     MAX_TREES: 50,
 	MAX_X: 1920,
 	MAX_Y: 1080,
 	FORESTID: 0,
 	CITYID: 1,
-	ROOFID: 2,
-	ICEID: 3,
+	ICEID: 2,
+    MAP_NAMES: ["Forest", "City", "Iceberg"],
 	HALFROAD: (1920 / 30),
 	TREE: {
 	    health: 100
@@ -25,8 +26,10 @@ const CONSTANTS = {
     HAND_SIZE: 5,
     FIST_REACH: 15,
     BULLET_SIZE: 3,
-    BULLET_DURATION: 420,
-    GAME_LENGTH: 0.5 * 60 * 60,
+    BULLET_DURATION: 360,
+    GAME_LENGTH: 5 * 60 * 60,
+    //this is the only one in seconds!
+    RELOAD_TIME: 2,
     //enum for weapons, similar to below
     //TODO: bullet spread
     WEAPONS: {
@@ -39,7 +42,8 @@ const CONSTANTS = {
             damage: 15,
             speed: 2000,
             cooldown: 5,
-            length: 20
+            length: 20,
+            magazine: 15
         },
         AR: 2,
         2: {
@@ -47,7 +51,8 @@ const CONSTANTS = {
             speed: 1800,
             cooldown: 5,
             auto: true,
-            length: 34
+            length: 34,
+            magazine: 30
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
@@ -64,9 +69,11 @@ const CONSTANTS = {
     GAME_MODES: {
         DEATHMATCH: 0
     },
+    MODE_NAMES: ["Deathmatch"],
     ROLES: {
         PLAYER: 1,
-        BULLET: 2
+        BULLET: 2,
+        BORDER: 3
     },
 }
 module.exports = CONSTANTS;
@@ -103,6 +110,7 @@ socket.on("map", data =>
         mapobjects = data.mapobjects;
         hazards = data.hazards;
         roads = data.roads;
+        document.getElementById("map-name").textContent = CONSTANTS.MAP_NAMES[maptype];
     }
 );
 
@@ -154,7 +162,8 @@ const KEYS = {
     LEFT: 65,
     DOWN: 83,
     RIGHT: 68,
-    VIEW_STATS: 9
+    VIEW_STATS: 9,
+    RELOAD: 82
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
@@ -242,12 +251,11 @@ const drawPlayer = (player) => {
     }
 
     ctx.restore();
-    
-    for(let i = 0; i<players.length; i++){
-        const player = players[i];
-        ctx.font = '48px serif';
-        ctx.fillText(player.name, 10, 50);        
-    }
+
+    fill("black");
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = "center";
+    ctx.fillText(player.name, x, y + CONSTANTS.PLAYER_SIZE + 16);  
 }
 
 const drawBullet = (bullet) => {
@@ -293,8 +301,8 @@ const draw = () => {
             user = player;
     }
 
-    ctx.fillStyle = "#008000";
-    ctx.fillRect(0, 0, width, height);
+    if(user)
+        drawBackground();
 
     //draw bullets
     for(let i = 0; i < bullets.length; i++){
@@ -335,6 +343,10 @@ const draw = () => {
         document.getElementById("time-remaining").textContent = `${minutes}:${seconds.padStart(2, "0")}`
     }
 
+    //update ammo
+    if(user)
+        document.getElementById("ammo-amount").textContent = user.magazine;
+
     //send data to server
     socket.emit("movement", movement);
 
@@ -347,6 +359,9 @@ window.addEventListener("keydown", e => {
     if(e.keyCode === KEYS.VIEW_STATS){
         e.preventDefault();
         document.getElementById("game-info").style.display = "block";
+    }
+    if(e.keyCode === KEYS.RELOAD){
+        socket.emit("reload");
     }
 });
 window.addEventListener("keyup", e => {
@@ -412,15 +427,10 @@ socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";
 })
 
-function drawMap() {
-    if (maptype === FORESTID) {
-        ctx.fillStyle = "#FF8000";
-        for (var i = 0; i < mapobjects.length; i++) {
-            ctx.beginPath();
-            ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 5, 0, 2 * Math.PI);
-            ctx.fill();
-        }
-    } else if (maptype === CITYID) {
+function drawBackground(){
+    ctx.fillStyle = "#008000";
+    ctx.fillRect(0, 0, width, height);
+    if(maptype === CITYID){
         ctx.fillStyle = "#A0A0A0";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
@@ -430,7 +440,6 @@ function drawMap() {
                 doRect(0, (roads[i][1] - 1.5 * HALFROAD), MAX_X, 3 * HALFROAD);
             }
         }
-
         ctx.fillStyle = "#808080";
         for (var i = 0; i < roads.length; i++) {
             if (roads[i][0] === 1) {
@@ -440,7 +449,25 @@ function drawMap() {
                 doRect(0, (roads[i][1] - HALFROAD), MAX_X, 2 * HALFROAD);
             }
         }
+    }else if(maptype === ICEID){
+        ctx.fillStyle = "#00FFFF";
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = "#80FFFF";
+        ctx.beginPath();
+        ctx.arc(MAX_X / 2 - user.x + width / 2, MAX_Y / 2 - user.y + height / 2, MAX_X / 3, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
 
+function drawMap() {
+    if (maptype === FORESTID) {
+        ctx.fillStyle = "#FF8000";
+        for (var i = 0; i < mapobjects.length; i++) {
+            ctx.beginPath();
+            ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+    } else if (maptype === CITYID) {
         ctx.fillStyle = "#404040";
         for (var i = 0; i < walls.length; i++) {
             doRect((walls[i][0]), (walls[i][1]), (walls[i][2] - walls[i][0]), (walls[i][3] - walls[i][1]));
@@ -452,45 +479,39 @@ function drawMap() {
         }
 
         
-    } else if (maptype === ROOFID) {
-        ctx.fillStyle = "#A0A0A0";
-        for (var i = 0; i < roads.length; i++) {
-            if (roads[i][0] === 1) {
-                doRect((roads[i][1] - 1.5 * HALFROAD), 0, 3 * HALFROAD, MAX_Y);
-            }
-            if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - 1.5 * HALFROAD), MAX_X, 3 * HALFROAD);
-            }
-        }
+    } 
+    // else if (maptype === ROOFID) {
+    //     ctx.fillStyle = "#A0A0A0";
+    //     for (var i = 0; i < roads.length; i++) {
+    //         if (roads[i][0] === 1) {
+    //             doRect((roads[i][1] - 1.5 * HALFROAD), 0, 3 * HALFROAD, MAX_Y);
+    //         }
+    //         if (roads[i][0] === 0) {
+    //             doRect(0, (roads[i][1] - 1.5 * HALFROAD), MAX_X, 3 * HALFROAD);
+    //         }
+    //     }
 
-        ctx.fillStyle = "#808080";
-        for (var i = 0; i < roads.length; i++) {
-            if (roads[i][0] === 1) {
-                doRect((roads[i][1] - HALFROAD), 0, 2 * HALFROAD, MAX_Y);
-            }
-            if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - HALFROAD), MAX_X, 2 * HALFROAD);
-            }
-        }
+    //     ctx.fillStyle = "#808080";
+    //     for (var i = 0; i < roads.length; i++) {
+    //         if (roads[i][0] === 1) {
+    //             doRect((roads[i][1] - HALFROAD), 0, 2 * HALFROAD, MAX_Y);
+    //         }
+    //         if (roads[i][0] === 0) {
+    //             doRect(0, (roads[i][1] - HALFROAD), MAX_X, 2 * HALFROAD);
+    //         }
+    //     }
 
-        ctx.fillStyle = "#404040";
-        for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0]), (walls[i][1]), (walls[i][2] - walls[i][0]), (walls[i][3] - walls[i][1]));
-        }
+    //     ctx.fillStyle = "#404040";
+    //     for (var i = 0; i < walls.length; i++) {
+    //         doRect((walls[i][0]), (walls[i][1]), (walls[i][2] - walls[i][0]), (walls[i][3] - walls[i][1]));
+    //     }
 
-        ctx.fillStyle = "#808080";
-        for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0] + HALFROAD / 2), (walls[i][1] + HALFROAD / 2), (walls[i][2] - walls[i][0] - HALFROAD), (walls[i][3] - walls[i][1] - HALFROAD));
-        }
+    //     ctx.fillStyle = "#808080";
+    //     for (var i = 0; i < walls.length; i++) {
+    //         doRect((walls[i][0] + HALFROAD / 2), (walls[i][1] + HALFROAD / 2), (walls[i][2] - walls[i][0] - HALFROAD), (walls[i][3] - walls[i][1] - HALFROAD));
+    //     }
 
-    } else if (maptype === ICEID) {
-        ctx.fillStyle = "#00FFFF";
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = "#80FFFF";
-        ctx.beginPath();
-        ctx.arc(MAX_X / 2 - user.x + width / 2, MAX_Y / 2 - user.y + height / 2, MAX_X / 3, 0, 2 * Math.PI);
-        ctx.fill();
-    }
+    // } 
 }
 
 function realCoords(coord, axis) {
