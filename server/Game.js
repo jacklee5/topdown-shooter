@@ -32,6 +32,8 @@ class Game{
             hazards: this.hazards,
             roads: this.roads
         }
+
+        this.addWorldBounds();
     }
 
     rand() {
@@ -40,6 +42,7 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 4));
+        this.maptype = CITYID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
@@ -77,6 +80,54 @@ class Game{
         } else if (this.maptype === ICEID) {
 
         }
+
+        
+    }
+    addWorldBounds(){
+        //left wall
+        const lBody = new p2.Body({
+            mass: 0,
+            position: [0, MAX_Y / 2]
+        });
+        const lShape = new p2.Box({
+            width: 1,
+            height: MAX_Y
+        });
+        lBody.addShape(lShape);
+        this.world.addBody(lBody);
+        //right wall
+        const rBody = new p2.Body({
+            mass: 0,
+            position: [MAX_X, MAX_Y / 2]
+        });
+        const rShape = new p2.Box({
+            width: 1,
+            height: MAX_Y
+        });
+        rBody.addShape(rShape);
+        this.world.addBody(rBody);
+        //top wall
+        const tBody = new p2.Body({
+            mass: 0,
+            position: [MAX_X / 2, 0]
+        });
+        const tShape = new p2.Box({
+            width: MAX_X,
+            height: 1
+        });
+        tBody.addShape(tShape);
+        this.world.addBody(tBody);
+        //bottom wall
+        const bBody = new p2.Body({
+            mass: 0,
+            position: [MAX_X / 2, MAX_Y]
+        });
+        const bShape = new p2.Box({
+            width: MAX_X,
+            height: 1
+        });
+        bBody.addShape(bShape);
+        this.world.addBody(bBody);
     }
     updateLeaderboard(){
         const arr = this.players.map(x => {
@@ -96,6 +147,8 @@ class Game{
     addPlayer(player){
         this.players.push(player);
         player.roomId = this.id;
+        player.x = 1000;
+        player.y = 500;
         this.updateLeaderboard();
     }
     tick(io){
