@@ -25,7 +25,7 @@ const CONSTANTS = {
     FIST_REACH: 15,
     BULLET_SIZE: 3,
     BULLET_DURATION: 420,
-    GAME_LENGTH: 1 * 60 * 60,
+    GAME_LENGTH: 0.5 * 60 * 60,
     //enum for weapons, similar to below
     //TODO: bullet spread
     WEAPONS: {

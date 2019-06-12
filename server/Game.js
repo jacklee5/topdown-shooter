@@ -56,8 +56,9 @@ class Game{
             }else if(b.role === ROLES.BULLET){
                 bullet = b.parent;
             }
-            if(player === bullet.origin) return;
             if(player){
+                if(player === bullet.origin) return;
+                if(player.deactivated) return;
                 player.health -= bullet.damage;
                 if(player.health < 0){
                     bullet.origin.kill(player);
@@ -230,7 +231,11 @@ class Game{
         this.updateLeaderboard();
     }
     tick(io){
-        this.timeRemaining--;
+        if(this.timeRemaining === 0){
+            this.io.in(this.id).emit("game over");
+        }else{
+            this.timeRemaining--;
+        }
         //update players
         for(let i = 0; i < this.players.length; i++)
             this.players[i].update();

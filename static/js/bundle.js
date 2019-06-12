@@ -26,7 +26,7 @@ const CONSTANTS = {
     FIST_REACH: 15,
     BULLET_SIZE: 3,
     BULLET_DURATION: 420,
-    GAME_LENGTH: 1 * 60 * 60,
+    GAME_LENGTH: 0.5 * 60 * 60,
     //enum for weapons, similar to below
     //TODO: bullet spread
     WEAPONS: {
@@ -293,16 +293,17 @@ const draw = () => {
             user = player;
     }
 
-
-    //draw map
-    if(user)
-        drawMap();
-
+    ctx.fillStyle = "#008000";
+    ctx.fillRect(0, 0, width, height);
 
     //draw bullets
     for(let i = 0; i < bullets.length; i++){
         drawBullet(bullets[i]);
     }
+
+    //draw map
+    if(user)
+        drawMap();
 
 
     //draw players
@@ -330,8 +331,8 @@ const draw = () => {
     //update time
     if(timeRemaining){
         const minutes = Math.floor(timeRemaining / 60);
-        const seconds = Math.floor(timeRemaining % 60);
-        document.getElementById("time-remaining").textContent = `${minutes}:${seconds}`
+        const seconds = Math.floor(timeRemaining % 60) + "";
+        document.getElementById("time-remaining").textContent = `${minutes}:${seconds.padStart(2, "0")}`
     }
 
     //send data to server
@@ -406,11 +407,12 @@ socket.on("leaderboard", data => {
 });
 socket.on("death", () => {
     changePage(PAGES.GAMEOVER);
+});
+socket.on("game over", () => {
+    document.getElementById("game-info").style.display = "block";
 })
 
 function drawMap() {
-    ctx.fillStyle = "#008000";
-    ctx.fillRect(0, 0, width, height);
     if (maptype === FORESTID) {
         ctx.fillStyle = "#FF8000";
         for (var i = 0; i < mapobjects.length; i++) {

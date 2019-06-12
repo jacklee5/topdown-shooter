@@ -14,7 +14,7 @@ class Player{
         this.id = id;
         this.rotation = 0;
         this.health = 100;
-        this.weapon = WEAPONS.FISTS;
+        this.weapon = WEAPONS.AR;
         this.isPunching = false;
         this.socket;
         this.attackCooldown = 0;
@@ -165,6 +165,7 @@ class Player{
                 break;
             }
         }
+        this.deactivated = true;
         this.body.shapes[0].sensor = true;
     }
     activate(){
