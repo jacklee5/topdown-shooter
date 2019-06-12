@@ -105,7 +105,12 @@ io.on('connection', function (socket) {
         const player = players[socket.id];
         if(!player) return;
         player.previousWeapon();
-    })
+    });
+    socket.on("switch weapon", (x) => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.switchWeapon(x);
+    });
 });
 
 //main loop

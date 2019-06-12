@@ -56,7 +56,7 @@ class Player{
         };
         this.weapons = {
             fist: false,
-            pistol: true,
+            pistol: false,
             ar: false
         }
     }
@@ -176,9 +176,14 @@ class Player{
     }
     nextWeapon(){
         this.currentWeapon = (this.currentWeapon + 1) % this.inventory.length;
+        
     }
     previousWeapon(){
         this.currentWeapon = (this.currentWeapon - 1 + this.inventory.length) % this.inventory.length;
+    }
+    switchWeapon(x){
+        if(x >= this.inventory.length) return;
+        this.currentWeapon = x;
     }
     respawn(){
         this.activate();

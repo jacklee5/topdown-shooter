@@ -165,7 +165,7 @@ const KEYS = {
     DOWN: 83,
     RIGHT: 68,
     VIEW_STATS: 9,
-    RELOAD: 82
+    RELOAD: 82,
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
@@ -290,10 +290,6 @@ const draw = () => {
     movement.down = keyStates[KEYS.DOWN];
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
-    const weapons = {}
-    weapons.fist = keyStates[KEYS.FIST];
-    weapons.pistol = keyStates[KEYS.PISTOL];
-    weapons.ar = keyStates[KEYS.AR];
 
     //player loop thing
     //find out which person is the user
@@ -388,6 +384,14 @@ window.addEventListener("wheel", (e) => {
         socket.emit("previous weapon");
     }else{
         socket.emit("next weapon");
+    }
+});
+
+window.addEventListener("keydown", e => {
+    console.log("sdlfjk");
+    keyStates[e.keyCode] = true;
+    if(e.keyCode >= 49 && e.keyCode <= 58){
+        socket.emit("switch weapon", e.keyCode - 49);
     }
 })
 
