@@ -182,14 +182,8 @@ const drawPlayer = (player) => {
 const drawBullet = (bullet) => {
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(bullet.rotation);
-    
     fill("black");
-    drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
-
-    ctx.restore();
+    drawCircle(x, y, CONSTANTS.BULLET_SIZE);
 }
 
 //draw loop

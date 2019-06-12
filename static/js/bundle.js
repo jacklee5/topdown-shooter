@@ -1,7 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const CONSTANTS = { 
     PLAYER_SIZE: 15,
-    MAX_TREES: 20,
+    MAX_TREES: 50,
 	MAX_X: 1920,
 	MAX_Y: 1080,
 	FORESTID: 0,
@@ -34,13 +34,13 @@ const CONSTANTS = {
         PISTOL: 1,
         1: {
             damage: 15,
-            speed: 5,
+            speed: 300,
             cooldown: 30
         },
         AR: 2,
         2: {
             damage: 12,
-            speed: 4,
+            speed: 240,
             cooldown: 45,
             auto: true
         }
@@ -58,7 +58,11 @@ const CONSTANTS = {
     }, 
     GAME_MODES: {
         DEATHMATCH: 0
-    }
+    },
+    ROLES: {
+        PLAYER: 1,
+        BULLET: 2
+    },
 }
 module.exports = CONSTANTS;
 },{}],2:[function(require,module,exports){
@@ -246,14 +250,8 @@ const drawPlayer = (player) => {
 const drawBullet = (bullet) => {
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(bullet.rotation);
-    
     fill("black");
-    drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
-
-    ctx.restore();
+    drawCircle(x, y, CONSTANTS.BULLET_SIZE);
 }
 
 //draw loop

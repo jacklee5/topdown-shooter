@@ -33,13 +33,13 @@ const CONSTANTS = {
         PISTOL: 1,
         1: {
             damage: 15,
-            speed: 5,
+            speed: 300,
             cooldown: 30
         },
         AR: 2,
         2: {
             damage: 12,
-            speed: 4,
+            speed: 240,
             cooldown: 45,
             auto: true
         }
@@ -57,6 +57,10 @@ const CONSTANTS = {
     }, 
     GAME_MODES: {
         DEATHMATCH: 0
-    }
+    },
+    ROLES: {
+        PLAYER: 1,
+        BULLET: 2
+    },
 }
 module.exports = CONSTANTS;

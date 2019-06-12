@@ -2,7 +2,7 @@ const MAX_PLAYERS = 20;
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 
-const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, TREE, CAR, SNAKE } = require("../shared/constants");
+const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, TREE, CAR, SNAKE, PLAYER_SIZE, ROLES } = require("../shared/constants");
 
 class Game{
     constructor(id, io){
@@ -34,6 +34,34 @@ class Game{
         }
 
         this.addWorldBounds();
+        this.world.on("beginContact", event => {
+            const a = event.bodyA;
+            const b = event.bodyB;
+            if(!(a.role === ROLES.BULLET || b.role === ROLES.BULLET)) return;
+            let player;
+            let bullet;
+            if(a.role === ROLES.BULLET && b.role === ROLES.PLAYER){
+                player = b.parent;
+                bullet = a.parent;
+            }else if(a.role === ROLES.PLAYER && b.role === ROLES.BULLET){
+                player = a.parent;
+                bullet = b.parent;
+            }else if(a.role === ROLES.BULLET && b.role === ROLES.BULLET){
+                return;
+            }else if(a.role === ROLES.BULLET){
+                bullet = a.parent;
+            }else if(b.role === ROLES.BULLET){
+                bullet = b.parent;
+            }
+            if(player === bullet.origin) return;
+            if(player){
+                player.health -= bullet.damage;
+                if(player.health < 0){
+                    bullet.origin.kill(player);
+                }
+            }
+            bullet.destroy();
+        })
     }
 
     rand() {
@@ -42,7 +70,7 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 4));
-        this.maptype = ICEID;
+        this.maptype = FORESTID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
@@ -187,9 +215,15 @@ class Game{
         this.world.addBody(player.body);
         player.roomId = this.id;
         player.game = this;
-        player.x = MAX_X / 2;
-        player.y = MAX_Y / 2;
-        player.insideObject();
+        if(this.maptype === ICEID){
+            let r = Math.random() * (MAX_X / 3);
+            let t = Math.random() * 2 * Math.PI;
+            player.x = Math.round(MAX_X / 2 + r * Math.cos(t));
+            player.y = Math.round(MAX_Y / 2 + r * Math.sin(t));
+        }else{
+            player.x = PLAYER_SIZE + Math.random() * (MAX_X - PLAYER_SIZE * 2);
+            player.y = PLAYER_SIZE + Math.random() * (MAX_Y - PLAYER_SIZE * 2);
+        }
         this.updateLeaderboard();
     }
     tick(io){

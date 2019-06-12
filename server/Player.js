@@ -1,4 +1,4 @@
-const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE, GAME_MODES, ICEID, MAX_X, MAX_Y } = require("../shared/constants.js");
+const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE, GAME_MODES, ICEID, MAX_X, MAX_Y, ROLES } = require("../shared/constants.js");
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 const dist = (x1, y1, x2, y2) => {
@@ -35,6 +35,8 @@ class Player{
             radius: PLAYER_SIZE
         });
         this.body.addShape(shape);
+        this.body.parent = this;
+        this.body.role = ROLES.PLAYER;
 
         //what movement keys the player is currently pressing
         this.movement = {
