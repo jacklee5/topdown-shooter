@@ -400,7 +400,7 @@ function drawMap() {
         ctx.fillRect(0, 0, width, height);
         ctx.fillStyle = "#80FFFF";
         ctx.beginPath();
-        ctx.arc(width / 2 - user.x, height / 2 - user.y, MAX_Y / 3, 0, 2 * Math.PI);
+        ctx.arc(MAX_X - user.x + width / 2, MAX_Y - user.y + height / 2, MAX_Y / 3, 0, 2 * Math.PI);
         ctx.fill();
     }
 }
