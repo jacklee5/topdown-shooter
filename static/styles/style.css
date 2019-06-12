@@ -52,15 +52,15 @@ body {
 
 #death_message{
     font-size: 100px;
+    margin-top: 30vh;
     margin-bottom: 10px;
 }
 
-#rank_message{
-    font-size: 45px;
+#respawn_button{
+    background-color:#a7b5cc;
+    font-size: 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
 }
 
-#results_table{
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 37px;    
-}
