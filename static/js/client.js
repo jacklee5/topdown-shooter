@@ -126,7 +126,7 @@ const drawPlayer = (player) => {
     let x = player.x - user.x + width / 2;
     let y = player.y - user.y + height / 2;
     let r = player.rotation;
-    fill("red");
+    fill("#ffcd94");
 
     ctx.save();
     ctx.translate(x, y);
@@ -135,10 +135,9 @@ const drawPlayer = (player) => {
     //body
     drawCircle(0, 0, CONSTANTS.PLAYER_SIZE);
 
-    fill("red");
     //hands
     let rightX = HAND_X, rightY = HAND_Y, leftX = -HAND_X, leftY = HAND_Y;
-    if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
+    if(player.weapon === CONSTANTS.WEAPONS.PISTOL || player.weapon === CONSTANTS.WEAPONS.REVOLVER){
         rightX = 0;
         rightY = -CONSTANTS.PLAYER_SIZE - 4;
         leftX = 0;
@@ -167,7 +166,7 @@ const drawPlayer = (player) => {
 
     //gun
     if(player.weapon !== CONSTANTS.WEAPONS.FISTS){
-        fill("black");
+        fill(CONSTANTS.WEAPONS[player.weapon].color || "black");
         drawRect(-2 , -CONSTANTS.PLAYER_SIZE - 2, 4, -CONSTANTS.WEAPONS[player.weapon].length - 2)
     }
 
@@ -207,6 +206,28 @@ const compareInventories = (inv1, inv2) => {
             return false;
     }
     return true;
+}
+
+//get index of current weapon
+const getIndex = () => {
+    const inv = user.inventory;
+    for(let i = 0; i < inv.length; i++){
+        console.log(user.weapon);
+        console.log(inv);
+        if(inv[i].weapon === user.weapon)
+            return i;
+    }
+    return -1;
+}
+
+//highlight selected weapon
+const showWeapon = () => {
+    const els = document.getElementsByClassName("weapon");
+    for(let i = 0; i < els.length; i++){
+        els[i].className = "weapon";
+    }
+    if(els[getIndex()])
+        els[getIndex()].className += " active-weapon"
 }
 
 //draw loop
@@ -252,6 +273,9 @@ const draw = () => {
     //draw map
     if(user)
         drawMap();
+
+    if(user)
+        showWeapon();
 
     //draw players
     if(user){
@@ -299,7 +323,7 @@ window.addEventListener("keydown", e => {
         e.preventDefault();
         document.getElementById("game-info").style.display = "block";
     }
-    if(e.keyCode === KEYS.RELOAD){
+    if(e.keyCode === KEYS.RELOAD && user.magazine < CONSTANTS.WEAPONS[user.weapon].magazine){
         socket.emit("reload");
         const el = document.getElementById("message");
         el.style.display = "block";
@@ -379,9 +403,7 @@ socket.on("leaderboard", data => {
     }
 });
 socket.on("death", () => {
-    
     changePage(PAGES.GAMEOVER);
-    
 });
 socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";

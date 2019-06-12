@@ -23,6 +23,12 @@ body {
     margin-bottom: 0;
     font-size: 80px;
 }
+.weapon{
+    opacity: 0.5;
+}
+.active-weapon{
+    opacity: 1;
+}
 
 
 #top_page_text{

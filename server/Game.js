@@ -71,10 +71,8 @@ class Game{
     rand() {
         return Math.random();
     }
-
     createMap() {
         this.maptype = Math.floor((Math.random() * 3));
-        this.maptype = CITYID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
