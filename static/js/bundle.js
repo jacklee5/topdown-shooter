@@ -54,7 +54,18 @@ const CONSTANTS = {
             length: 34,
             magazine: 30,
             spread: 8,
-            reload: 2
+            reload: 1
+        },
+        REVOLVER: 3,
+        3: {
+            damage: 45,
+            speed: 2500,
+            cooldown: 30,
+            length: 20,
+            color: "#636363",
+            spread: 1,
+            magazine: 5,
+            reload: 1.5
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
@@ -219,7 +230,7 @@ const drawPlayer = (player) => {
 
     //hands
     let rightX = HAND_X, rightY = HAND_Y, leftX = -HAND_X, leftY = HAND_Y;
-    if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
+    if(player.weapon === CONSTANTS.WEAPONS.PISTOL || player.weapon === CONSTANTS.WEAPONS.REVOLVER){
         rightX = 0;
         rightY = -CONSTANTS.PLAYER_SIZE - 4;
         leftX = 0;
@@ -248,7 +259,7 @@ const drawPlayer = (player) => {
 
     //gun
     if(player.weapon !== CONSTANTS.WEAPONS.FISTS){
-        fill("black");
+        fill(CONSTANTS.WEAPONS[player.weapon].color || "black");
         drawRect(-2 , -CONSTANTS.PLAYER_SIZE - 2, 4, -CONSTANTS.WEAPONS[player.weapon].length - 2)
     }
 
@@ -405,7 +416,7 @@ window.addEventListener("keydown", e => {
         e.preventDefault();
         document.getElementById("game-info").style.display = "block";
     }
-    if(e.keyCode === KEYS.RELOAD){
+    if(e.keyCode === KEYS.RELOAD && user.magazine < CONSTANTS.WEAPONS[user.weapon].magazine){
         socket.emit("reload");
         const el = document.getElementById("message");
         el.style.display = "block";
@@ -485,10 +496,7 @@ socket.on("leaderboard", data => {
     }
 });
 socket.on("death", () => {
-    
     changePage(PAGES.GAMEOVER);
-    document.getElementById("kill_count").textContent = user.kills;
-    
 });
 socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";

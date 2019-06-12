@@ -69,7 +69,12 @@ io.on('connection', function (socket) {
         const player = players[socket.id];
         if(!player) return;
         console.log(`[DEBUG] user ${player.name} disconnected`);
+        const game = player.game;
         player.leaveGame();
+        if(!game) return;
+        if(game.players.length === 0)
+            delete games[game.id];
+        
     })
     socket.on("fire", () => {
         const player = players[socket.id];

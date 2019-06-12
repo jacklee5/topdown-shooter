@@ -15,7 +15,7 @@ class Player{
         this.rotation = 0;
         this.health = 100;
 
-        let inv = [WEAPONS.PISTOL, WEAPONS.AR, WEAPONS.FISTS]
+        let inv = [WEAPONS.AR, WEAPONS.REVOLVER, WEAPONS.FISTS]
         this.inventory = inv.map(x => {
             return {
                 weapon: x,
@@ -30,6 +30,7 @@ class Player{
         this.mouseDown = false;
         this.kills = 0;
         this.score = 0;
+        this.reloadTimeout;
 
         //animation stuff
         this.animating = false;
@@ -87,6 +88,8 @@ class Player{
     update(){
         //movement
         let movementSpeed = this.movementSpeed;
+        if(this.reloadTimeout) 
+            movementSpeed /= 2;
         this.body.velocity = [0, 0];
         if((this.movement.up || this.movement.down) && (this.movement.left || this.movement.right))
             movementSpeed /= ROOT2
@@ -169,21 +172,26 @@ class Player{
         player.deactivate();
     }
     reload(){
-        setTimeout(() => {
+        this.reloadTimeout = setTimeout(() => {
             this.magazine = WEAPONS[this.weapon].magazine;
             this.socket.emit("done reloading");
+            this.reloadTimeout = undefined;
         }, WEAPONS[this.weapon].reload * 1000)
     }
     nextWeapon(){
-        this.currentWeapon = (this.currentWeapon + 1) % this.inventory.length;
+        this.switchWeapon((this.currentWeapon + 1) % this.inventory.length);
         
     }
     previousWeapon(){
-        this.currentWeapon = (this.currentWeapon - 1 + this.inventory.length) % this.inventory.length;
+        this.switchWeapon((this.currentWeapon - 1 + this.inventory.length) % this.inventory.length);
     }
     switchWeapon(x){
         if(x >= this.inventory.length) return;
         this.currentWeapon = x;
+        if(!this.reloadTimeout) return;
+        clearInterval(this.reloadTimeout);
+        this.reloadTimeout = undefined;
+        this.socket.emit("done reloading");
     }
     respawn(){
         this.activate();
@@ -242,7 +250,7 @@ class Player{
             animationProgress: this.animationProgress,
             animation: this.animation,
             magazine: this.magazine,
-            kills: this.kills,
+            kills: this.score,
             inventory: this.inventory,
             currentWeapon: this.currentWeapon
         }

@@ -53,7 +53,18 @@ const CONSTANTS = {
             length: 34,
             magazine: 30,
             spread: 8,
-            reload: 2
+            reload: 1
+        },
+        REVOLVER: 3,
+        3: {
+            damage: 45,
+            speed: 2500,
+            cooldown: 30,
+            length: 20,
+            color: "#636363",
+            spread: 1,
+            magazine: 5,
+            reload: 1.5
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
