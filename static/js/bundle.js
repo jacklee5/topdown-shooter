@@ -412,7 +412,6 @@ window.addEventListener("wheel", (e) => {
 });
 
 window.addEventListener("keydown", e => {
-    console.log("sdlfjk");
     keyStates[e.keyCode] = true;
     if(e.keyCode >= 49 && e.keyCode <= 58){
         socket.emit("switch weapon", e.keyCode - 49);
