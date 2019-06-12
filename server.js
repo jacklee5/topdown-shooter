@@ -87,6 +87,7 @@ io.on('connection', function (socket) {
         const player = players[socket.id];
         if(!player) return;
         player.activate();
+        player.health = 100;
     })
     socket.on("rotation", angle => {
         const player = players[socket.id];
