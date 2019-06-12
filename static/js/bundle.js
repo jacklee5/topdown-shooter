@@ -1,7 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const CONSTANTS = { 
     PLAYER_SIZE: 15,
-    MAX_TREES: 20,
+    MAX_TREES: 50,
 	MAX_X: 1920,
 	MAX_Y: 1080,
 	FORESTID: 0,
@@ -393,7 +393,7 @@ function drawMap() {
         ctx.fillStyle = "#FF8000";
         for (var i = 0; i < mapobjects.length; i++) {
             ctx.beginPath();
-            ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, 20, 0, 2 * Math.PI);
+            ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 5, 0, 2 * Math.PI);
             ctx.fill();
         }
     } else if (maptype === CITYID) {

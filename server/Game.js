@@ -42,9 +42,11 @@ class Game{
         this.maptype = Math.floor((Math.random() * 4));
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
-                this.mapobjects.push(TREE);
-                this.mapobjects[i].x = (this.rand() * MAX_X);
-                this.mapobjects[i].y = (this.rand() * MAX_Y);
+                this.mapobjects.push({
+                    x: this.rand() * MAX_X,
+                    y: this.rand() * MAX_Y,
+                    health: 100
+                });
             }
         } else if (this.maptype === CITYID) {
             var vert1 = (Math.random() * MAX_X / 7 + 1 * MAX_X / 5);
