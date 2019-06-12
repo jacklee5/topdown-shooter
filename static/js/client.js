@@ -52,7 +52,7 @@ const changePage = (id) => {
         pages[i].style.display = "none";
     }
     pages[id].style.display = "block";
-
+    currentPage = id;
     //do page-specific things
     if(id === PAGES.GAME){
         document.body.style.overflow = "hidden";
@@ -90,7 +90,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
 let bullets = [];
-let inventory = [];
+let currentWeapon;
 let timeRemaining;
 //which player is the user
 let user = {inventory: []};
@@ -233,8 +233,14 @@ const draw = () => {
             user = player;
         if(!compareInventories(user.inventory, old)){
             const inv = user.inventory;
+            const el = document.getElementById("weapons");
+            el.innerHTML = "";
             for(let i = 0; i < inv.length; i++){
-                
+                el.innerHTML += `
+                <div class = "weapon">
+                    <img src = "/static/img/weapon${inv[i].weapon}.svg" width = "48">
+                </div>
+                `
             }
         }
     }
@@ -299,6 +305,9 @@ window.addEventListener("keydown", e => {
     }
     if(e.keyCode === KEYS.RELOAD){
         socket.emit("reload");
+        const el = document.getElementById("message");
+        el.style.display = "block";
+        el.textContent = "reloading...";
     }
 });
 window.addEventListener("keyup", e => {
@@ -309,10 +318,19 @@ window.addEventListener("keyup", e => {
     }
 });
 window.addEventListener("mousedown", () => {
-    socket.emit("fire");
+    if(currentPage === PAGES.GAME)
+        socket.emit("fire");
 });
 window.addEventListener("mouseup", () => {
-    socket.emit("release")
+    if(currentPage === PAGES.GAME)
+        socket.emit("release")
+});
+window.addEventListener("wheel", (e) => {
+    if(e.deltaY < 0){
+        socket.emit("previous weapon");
+    }else{
+        socket.emit("next weapon");
+    }
 })
 
 //rotate player
@@ -360,9 +378,11 @@ socket.on("leaderboard", data => {
 socket.on("death", () => {
     changePage(PAGES.GAMEOVER);
 });
-
 socket.on("game over", () => {
-    document.getElementById("game-info").style.display;
+    document.getElementById("game-info").style.display = "block";
+});
+socket.on("done reloading", () => {
+    document.getElementById("message").style.display = "none";
 })
 
 function drawBackground(){

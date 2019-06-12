@@ -172,7 +172,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
 let bullets = [];
-let inventory = [];
+let currentWeapon;
 let timeRemaining;
 //which player is the user
 let user = {inventory: []};
@@ -315,8 +315,14 @@ const draw = () => {
             user = player;
         if(!compareInventories(user.inventory, old)){
             const inv = user.inventory;
+            const el = document.getElementById("weapons");
+            el.innerHTML = "";
             for(let i = 0; i < inv.length; i++){
-                
+                el.innerHTML += `
+                <div class = "weapon">
+                    <img src = "/static/img/weapon${inv[i].weapon}.svg" width = "48">
+                </div>
+                `
             }
         }
     }
