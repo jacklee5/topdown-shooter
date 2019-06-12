@@ -10,11 +10,11 @@ class Player{
         this.name = name;
         this.roomId;
         this.game;
-        this.movementSpeed = 25;
+        this.movementSpeed = 200;
         this.id = id;
         this.rotation = 0;
         this.health = 100;
-        this.weapon = WEAPONS.AR;
+        this.weapon = WEAPONS.FISTS;
         this.isPunching = false;
         this.socket;
         this.attackCooldown = 0;
@@ -63,7 +63,10 @@ class Player{
             else
                 this.animation = ANIMATIONS.PUNCH_RIGHT;
         }else if(this.attackCooldown === 0){
-            this.game.bullets.push(new Bullet(this.x, this.y, this.rotation - Math.PI / 2, this.weapon, this.game, this));
+            let r = this.rotation - Math.PI / 2;
+            let x = this.x + Math.cos(r) * WEAPONS[this.weapon].length;
+            let y = this.y + Math.sin(r) * WEAPONS[this.weapon].length;
+            this.game.bullets.push(new Bullet(x, y, r, this.weapon, this.game, this));
             this.attackCooldown = WEAPONS[this.weapon].cooldown;
         }
     }

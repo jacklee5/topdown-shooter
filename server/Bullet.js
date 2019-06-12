@@ -1,4 +1,4 @@
-const { BULLET_SIZE, PLAYER_SIZE, WEAPONS, ROLES } = require("../shared/constants")
+const { BULLET_SIZE, WEAPONS, ROLES, BULLET_DURATION } = require("../shared/constants")
 const p2 = require("p2");
 const dist = (x1, y1, x2, y2) => {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
@@ -27,11 +27,11 @@ class Bullet{
 
         //the player object of the shooter
         this.origin = origin;
-        this.lifespan = 240;
+        this.duration = 0;
     }
     update(){
-        this.lifespan--;
-        if(this.lifespan === 0)
+        this.duration++;
+        if(this.lifespan === BULLET_DURATION)
             this.destroy();
     }
     destroy(){
@@ -53,6 +53,8 @@ class Bullet{
             x: this.x,
             y: this.y,
             rotation: this.rotation,
+            duration: this.duration,
+            speed: this.speed
         }
     }
 }

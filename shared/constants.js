@@ -24,35 +24,40 @@ const CONSTANTS = {
     HAND_SIZE: 5,
     FIST_REACH: 15,
     BULLET_SIZE: 3,
+    BULLET_DURATION: 420,
+    GAME_LENGTH: 1 * 60 * 60,
     //enum for weapons, similar to below
+    //TODO: bullet spread
     WEAPONS: {
         FISTS: 0,
         0: {
-            damage: 30
+            damage: 10
         },
         PISTOL: 1,
         1: {
             damage: 15,
-            speed: 300,
-            cooldown: 30
+            speed: 2000,
+            cooldown: 5,
+            length: 20
         },
         AR: 2,
         2: {
             damage: 12,
-            speed: 240,
-            cooldown: 45,
-            auto: true
+            speed: 1800,
+            cooldown: 5,
+            auto: true,
+            length: 34
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
     ANIMATIONS: {
         PUNCH_LEFT: 0,
         0: {
-            length: 120
+            length: 15
         },
         PUNCH_RIGHT: 1,
         1: {
-            length: 120
+            length: 15
         }
     }, 
     GAME_MODES: {

@@ -88,6 +88,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
 let bullets = [];
+let timeRemaining;
 //which player is the user
 let user;
 let height = window.innerHeight;
@@ -162,12 +163,9 @@ const drawPlayer = (player) => {
     drawCircle(rightX, rightY, CONSTANTS.HAND_SIZE);
 
     //gun
-    if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
+    if(player.weapon !== CONSTANTS.WEAPONS.FISTS){
         fill("black");
-        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -18);
-    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
-        fill("black")
-        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -32);
+        drawRect(-2 , -CONSTANTS.PLAYER_SIZE - 2, 4, -CONSTANTS.WEAPONS[player.weapon].length - 2)
     }
 
     ctx.restore();
@@ -182,8 +180,21 @@ const drawPlayer = (player) => {
 const drawBullet = (bullet) => {
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
-    fill("black");
-    drawCircle(x, y, CONSTANTS.BULLET_SIZE);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(bullet.rotation);
+
+    const trailLength = 45;
+    for(let i = 0; i < trailLength; i++){
+        fill(`rgba(255,255,255,${0.8 - (i)/trailLength})`)
+        drawCircle(-i, 0, CONSTANTS.BULLET_SIZE - (i * (CONSTANTS.BULLET_SIZE / 2)) / trailLength) + CONSTANTS.BULLET_SIZE / 2;
+    }
+    
+    
+    fill("rgba(255,255,255,0.8)");
+    drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
+
+    ctx.restore();
 }
 
 //draw loop
@@ -243,6 +254,13 @@ const draw = () => {
         drawRect(width / 2 - 196, height - 71, (health > 0 ? health / 100 : 0) * 392, 32)
     }
 
+    //update time
+    if(timeRemaining){
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = Math.floor(timeRemaining % 60);
+        document.getElementById("time-remaining").textContent = `${minutes}:${seconds}`
+    }
+
     //send data to server
     socket.emit("movement", movement);
 
@@ -295,6 +313,7 @@ document.getElementById("respawn-button").addEventListener("click", () => {
 socket.on("state", state => {
     players = state.players;
     bullets = state.bullets;
+    timeRemaining = state.timeRemaining;
 });
 socket.on("leaderboard", data => {
     const el = document.getElementById("ranks");

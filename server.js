@@ -100,7 +100,7 @@ setInterval(() => {
         games[i].tick(io);
         io.in(i).emit("state", games[i].toObject());
     }
-}, 1 / 60)
+}, 1000 / 60)
 
 http.listen(3000 || process.env.PORT, function () {
     console.log('listening on *:3000');

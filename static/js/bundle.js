@@ -25,35 +25,40 @@ const CONSTANTS = {
     HAND_SIZE: 5,
     FIST_REACH: 15,
     BULLET_SIZE: 3,
+    BULLET_DURATION: 420,
+    GAME_LENGTH: 1 * 60 * 60,
     //enum for weapons, similar to below
+    //TODO: bullet spread
     WEAPONS: {
         FISTS: 0,
         0: {
-            damage: 30
+            damage: 10
         },
         PISTOL: 1,
         1: {
             damage: 15,
-            speed: 300,
-            cooldown: 30
+            speed: 2000,
+            cooldown: 5,
+            length: 20
         },
         AR: 2,
         2: {
             damage: 12,
-            speed: 240,
-            cooldown: 45,
-            auto: true
+            speed: 1800,
+            cooldown: 5,
+            auto: true,
+            length: 34
         }
     },
     //enum for animations and the corresponding numbers encode values for the animation
     ANIMATIONS: {
         PUNCH_LEFT: 0,
         0: {
-            length: 120
+            length: 15
         },
         PUNCH_RIGHT: 1,
         1: {
-            length: 120
+            length: 15
         }
     }, 
     GAME_MODES: {
@@ -156,6 +161,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
 let bullets = [];
+let timeRemaining;
 //which player is the user
 let user;
 let height = window.innerHeight;
@@ -230,12 +236,9 @@ const drawPlayer = (player) => {
     drawCircle(rightX, rightY, CONSTANTS.HAND_SIZE);
 
     //gun
-    if(player.weapon === CONSTANTS.WEAPONS.PISTOL){
+    if(player.weapon !== CONSTANTS.WEAPONS.FISTS){
         fill("black");
-        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -18);
-    }else if(player.weapon === CONSTANTS.WEAPONS.AR){
-        fill("black")
-        drawRect(-2, -CONSTANTS.PLAYER_SIZE - 2, 4, -32);
+        drawRect(-2 , -CONSTANTS.PLAYER_SIZE - 2, 4, -CONSTANTS.WEAPONS[player.weapon].length - 2)
     }
 
     ctx.restore();
@@ -250,8 +253,21 @@ const drawPlayer = (player) => {
 const drawBullet = (bullet) => {
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
-    fill("black");
-    drawCircle(x, y, CONSTANTS.BULLET_SIZE);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(bullet.rotation);
+
+    const trailLength = 45;
+    for(let i = 0; i < trailLength; i++){
+        fill(`rgba(255,255,255,${0.8 - (i)/trailLength})`)
+        drawCircle(-i, 0, CONSTANTS.BULLET_SIZE - (i * (CONSTANTS.BULLET_SIZE / 2)) / trailLength) + CONSTANTS.BULLET_SIZE / 2;
+    }
+    
+    
+    fill("rgba(255,255,255,0.8)");
+    drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
+
+    ctx.restore();
 }
 
 //draw loop
@@ -311,6 +327,13 @@ const draw = () => {
         drawRect(width / 2 - 196, height - 71, (health > 0 ? health / 100 : 0) * 392, 32)
     }
 
+    //update time
+    if(timeRemaining){
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = Math.floor(timeRemaining % 60);
+        document.getElementById("time-remaining").textContent = `${minutes}:${seconds}`
+    }
+
     //send data to server
     socket.emit("movement", movement);
 
@@ -363,6 +386,7 @@ document.getElementById("respawn-button").addEventListener("click", () => {
 socket.on("state", state => {
     players = state.players;
     bullets = state.bullets;
+    timeRemaining = state.timeRemaining;
 });
 socket.on("leaderboard", data => {
     const el = document.getElementById("ranks");

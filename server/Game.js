@@ -2,8 +2,9 @@ const MAX_PLAYERS = 20;
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 
-const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, TREE, CAR, SNAKE, PLAYER_SIZE, ROLES } = require("../shared/constants");
+const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, HALFROAD, PLAYER_SIZE, ROLES, GAME_LENGTH } = require("../shared/constants");
 
+//TODO: make bullets not collide with borders
 class Game{
     constructor(id, io){
         this.players = [];
@@ -22,6 +23,8 @@ class Game{
         this.mapobjects = [];
         this.hazards = [];
         this.roads = [];
+
+        this.timeRemaining = GAME_LENGTH;
 
         this.createMap();
         this.map = {
@@ -227,6 +230,7 @@ class Game{
         this.updateLeaderboard();
     }
     tick(io){
+        this.timeRemaining--;
         //update players
         for(let i = 0; i < this.players.length; i++)
             this.players[i].update();
@@ -241,6 +245,7 @@ class Game{
         const result = {};
         result.players = this.players.map(x => x.toObject());
         result.bullets = this.bullets.map(x => x.toObject());
+        result.timeRemaining = this.timeRemaining / 60;
         return result;
     }
 
