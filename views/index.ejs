@@ -37,12 +37,23 @@
                 </center>
             </div>
             <!-- ammo indicator -->
-            <div style = "position:fixed; left: 50%; bottom: 88px; transform: translateX(-50%); text-align: center; font-size: 24px; pointer-events: none">
+            <div style = "position:fixed; left: 50%; bottom: 88px; transform: translateX(-50%); text-align: center; font-size: 24px;">
                 <img src = "/static/img/bullet.png" id = "bullet-sprite" style = "height: 24px;position:relative;top:2px;"> <span id = "ammo-amount" style = "line-height: 24px">30</span>
             </div>
             <!-- message -->
-            <div style = "position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; display: none; pointer-events: none" id = "message">
+            <div style = "position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; display: none;" id = "message">
                 reloading...
+            </div>
+            <!-- weapon select -->
+            <div style = "position: fixed; bottom: 32px; right: 32px">
+                <div style = "position: relative">
+                    <div class = "weapon">
+                        <img src = "/static/img/weapon1.svg" width = "48">
+                    </div>
+                    <div class = "weapon">
+                        <img src = "/static/img/weapon2.svg" width = "48">
+                    </div>
+                </div>
             </div>
         </div>
         <!-- death screen -->

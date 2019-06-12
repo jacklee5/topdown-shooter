@@ -14,6 +14,10 @@ body {
 #game-page *::selection{
     background: transparent;
 }
+#game-page *{
+    pointer-events: none;
+    
+}
 
 #title{
     margin-bottom: 0;

@@ -237,7 +237,8 @@ class Player{
             animationProgress: this.animationProgress,
             animation: this.animation,
             magazine: this.magazine,
-            kills: this.kills
+            kills: this.kills,
+            inventory: this.inventory
         }
     }
     get x(){
