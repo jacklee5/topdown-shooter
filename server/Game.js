@@ -42,7 +42,7 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 4));
-        this.maptype = CITYID;
+        this.maptype = ICEID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
