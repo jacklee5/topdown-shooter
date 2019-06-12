@@ -56,7 +56,6 @@ io.on('connection', function (socket) {
         socket.emit("map", games[roomId].map);
         players[socket.id] = player;
         games[roomId].world.addBody(player.body);
-        player.game = games[roomId];
 
         console.log(`[DEBUG] user ${username} in joined room ${roomId}`)
         

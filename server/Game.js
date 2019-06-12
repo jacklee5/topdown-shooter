@@ -42,7 +42,7 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 4));
-        this.maptype = FORESTID;
+        this.maptype = ICEID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
@@ -185,8 +185,10 @@ class Game{
     addPlayer(player){
         this.players.push(player);
         player.roomId = this.id;
-        player.x = 1000;
-        player.y = 500;
+        player.game = this;
+        player.x = MAX_X / 2;
+        player.y = MAX_Y / 2;
+        player.insideObject();
         this.updateLeaderboard();
     }
     tick(io){
