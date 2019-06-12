@@ -52,7 +52,7 @@ const changePage = (id) => {
         pages[i].style.display = "none";
     }
     pages[id].style.display = "block";
-
+    currentPage = id;
     //do page-specific things
     if(id === PAGES.GAME){
         document.body.style.overflow = "hidden";
@@ -83,14 +83,14 @@ const KEYS = {
     DOWN: 83,
     RIGHT: 68,
     VIEW_STATS: 9,
-    RELOAD: 82
+    RELOAD: 82,
 }
 const keyStates = {};
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
 let bullets = [];
-let inventory = [];
+let currentWeapon;
 let timeRemaining;
 //which player is the user
 let user = {inventory: []};
@@ -219,10 +219,6 @@ const draw = () => {
     movement.down = keyStates[KEYS.DOWN];
     movement.left = keyStates[KEYS.LEFT];
     movement.right = keyStates[KEYS.RIGHT];
-    const weapons = {}
-    weapons.fist = keyStates[KEYS.FIST];
-    weapons.pistol = keyStates[KEYS.PISTOL];
-    weapons.ar = keyStates[KEYS.AR];
 
     //player loop thing
     //find out which person is the user
@@ -233,8 +229,14 @@ const draw = () => {
             user = player;
         if(!compareInventories(user.inventory, old)){
             const inv = user.inventory;
+            const el = document.getElementById("weapons");
+            el.innerHTML = "";
             for(let i = 0; i < inv.length; i++){
-                
+                el.innerHTML += `
+                <div class = "weapon">
+                    <img src = "/static/img/weapon${inv[i].weapon}.svg" width = "48">
+                </div>
+                `
             }
         }
     }
@@ -299,6 +301,9 @@ window.addEventListener("keydown", e => {
     }
     if(e.keyCode === KEYS.RELOAD){
         socket.emit("reload");
+        const el = document.getElementById("message");
+        el.style.display = "block";
+        el.textContent = "reloading...";
     }
 });
 window.addEventListener("keyup", e => {
@@ -309,10 +314,26 @@ window.addEventListener("keyup", e => {
     }
 });
 window.addEventListener("mousedown", () => {
-    socket.emit("fire");
+    if(currentPage === PAGES.GAME)
+        socket.emit("fire");
 });
 window.addEventListener("mouseup", () => {
-    socket.emit("release")
+    if(currentPage === PAGES.GAME)
+        socket.emit("release")
+});
+window.addEventListener("wheel", (e) => {
+    if(e.deltaY < 0){
+        socket.emit("previous weapon");
+    }else{
+        socket.emit("next weapon");
+    }
+});
+
+window.addEventListener("keydown", e => {
+    keyStates[e.keyCode] = true;
+    if(e.keyCode >= 49 && e.keyCode <= 58){
+        socket.emit("switch weapon", e.keyCode - 49);
+    }
 })
 
 //rotate player
@@ -363,9 +384,11 @@ socket.on("death", () => {
     document.getElementById("kill_count").textContent = user.kills;
     
 });
-
 socket.on("game over", () => {
-    document.getElementById("game-info").style.display;
+    document.getElementById("game-info").style.display = "block";
+});
+socket.on("done reloading", () => {
+    document.getElementById("message").style.display = "none";
 })
 
 function drawBackground(){

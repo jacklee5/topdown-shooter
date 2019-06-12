@@ -15,7 +15,7 @@ class Player{
         this.rotation = 0;
         this.health = 100;
 
-        let inv = [WEAPONS.PISTOL, WEAPONS.AR]
+        let inv = [WEAPONS.PISTOL, WEAPONS.AR, WEAPONS.FISTS]
         this.inventory = inv.map(x => {
             return {
                 weapon: x,
@@ -56,7 +56,7 @@ class Player{
         };
         this.weapons = {
             fist: false,
-            pistol: true,
+            pistol: false,
             ar: false
         }
     }
@@ -152,9 +152,9 @@ class Player{
 
         if(this.attackCooldown > 0)
             this.attackCooldown--;
-        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0 && this.mouseDown)
+        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0 && this.mouseDown){
             this.fire();
-    
+        }
 
     }
     die(){
@@ -176,9 +176,14 @@ class Player{
     }
     nextWeapon(){
         this.currentWeapon = (this.currentWeapon + 1) % this.inventory.length;
+        
     }
     previousWeapon(){
         this.currentWeapon = (this.currentWeapon - 1 + this.inventory.length) % this.inventory.length;
+    }
+    switchWeapon(x){
+        if(x >= this.inventory.length) return;
+        this.currentWeapon = x;
     }
     respawn(){
         this.activate();
@@ -188,7 +193,7 @@ class Player{
         for(let i = 0; i < inv.length; i++){
             inv[i].magazine = WEAPONS[inv[i].weapon].magazine;
         }
-        console.log(inv);
+        this.mouseDown = false;
     }
     deactivate(){
         const players = this.game.players;

@@ -41,7 +41,7 @@ const CONSTANTS = {
             cooldown: 5,
             length: 20,
             magazine: 15,
-            spread: 20,
+            spread: 15,
             reload: 1
         },
         AR: 2,

@@ -105,7 +105,12 @@ io.on('connection', function (socket) {
         const player = players[socket.id];
         if(!player) return;
         player.previousWeapon();
-    })
+    });
+    socket.on("switch weapon", (x) => {
+        const player = players[socket.id];
+        if(!player) return;
+        player.switchWeapon(x);
+    });
 });
 
 //main loop
@@ -117,6 +122,6 @@ setInterval(() => {
 }, 1000 / 60)
 
 http.listen(80, function () {
-    console.log('listening on *:3000');
+    console.log('listening on *:80');
 });
 
