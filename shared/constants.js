@@ -1,6 +1,6 @@
 const CONSTANTS = { 
     PLAYER_SIZE: 15,
-    MAX_TREES: 20,
+    MAX_TREES: 50,
 	MAX_X: 1920,
 	MAX_Y: 1080,
 	FORESTID: 0,

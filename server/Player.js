@@ -1,4 +1,4 @@
-const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE, GAME_MODES } = require("../shared/constants.js");
+const { ANIMATIONS, PLAYER_SIZE, HAND_ANGLE, WEAPONS, FIST_REACH, HAND_SIZE, GAME_MODES, ICEID, MAX_X, MAX_Y } = require("../shared/constants.js");
 const p2 = require("p2");
 const ROOT2 = Math.sqrt(2);
 const dist = (x1, y1, x2, y2) => {
@@ -83,6 +83,13 @@ class Player{
         if(this.movement.right)
             this.body.velocity[0] = movementSpeed;
 
+        //check if you accidentally played yourself
+        if(this.game.maptype === ICEID){
+            if(dist(this.x, this.y, MAX_X / 2, MAX_Y / 2) > MAX_X / 3){
+                this.die();
+            }
+        }
+
         //animations
         if(this.animating){
             if(ANIMATIONS[this.animation].length > this.animationProgress)
@@ -134,6 +141,10 @@ class Player{
     
 
     }
+    die(){
+        this.socket.emit("death");
+        this.deactivate();
+    }
     kill(player){
         player.socket.emit("death");
         if(this.game.gameType === GAME_MODES.DEATHMATCH)
@@ -164,6 +175,14 @@ class Player{
                 return players.splice(i, 1);
             }
         }
+    }
+    insideObject(){
+        const bodies = this.game.world.bodies;
+        for(let i = 0; i < bodies.length; i++){
+            if(this.body.overlaps(bodies[i]))
+                return true;
+        }
+        return false;
     }
     toObject(){
         return {

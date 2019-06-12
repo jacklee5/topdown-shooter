@@ -32,15 +32,24 @@ class Game{
             hazards: this.hazards,
             roads: this.roads
         }
+
+        this.addWorldBounds();
     }
+
+    rand() {
+        return Math.random();
+    }
+
     createMap() {
-        console.log(FORESTID);
         this.maptype = Math.floor((Math.random() * 4));
+        this.maptype = ICEID;
         if (this.maptype === FORESTID) {
-            for (var i = 0; i < MAX_TREES; i++) {
-                this.mapobjects.push(TREE);
-                this.mapobjects[i].x = (Math.random() * MAX_X);
-                this.mapobjects[i].y = (Math.random() * MAX_Y);
+            for (let i = 0; i < MAX_TREES; i++) {
+                this.mapobjects.push({
+                    x: this.rand() * MAX_X,
+                    y: this.rand() * MAX_Y,
+                    health: 100
+                });
             }
         } else if (this.maptype === CITYID) {
             var vert1 = (Math.random() * MAX_X / 7 + 1 * MAX_X / 5);
@@ -71,6 +80,92 @@ class Game{
         } else if (this.maptype === ICEID) {
 
         }
+
+        //do the physics stuff
+        const rectBounds = this.rectBoundaries();
+        for(let i = 0; i < rectBounds.length; i++){
+            const x1 = rectBounds[i][0];
+            const y1 = rectBounds[i][1];
+            const x2 = rectBounds[i][2];
+            const y2 = rectBounds[i][3];
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const cx = x1 + dx / 2;
+            const cy = y1 + dy / 2;
+            const body = new p2.Body({
+                mass: 0,
+                position: [cx, cy]
+            });
+            const shape = new p2.Box({
+                width: dx,
+                height: dy
+            });
+            
+            body.addShape(shape);
+            this.world.addBody(body);
+        }
+
+        const circleBounds = this.circleBoundaries();
+        for(let i = 0; i < circleBounds.length; i++){
+            const x = circleBounds[i][0];
+            const y = circleBounds[i][1];
+            const r = circleBounds[i][2];
+            const body = new p2.Body({
+                mass: 0,
+                position: [x, y]
+            });
+            const shape = new p2.Circle({
+                radius: r
+            });
+            body.addShape(shape);
+            this.world.addBody(body);
+        }
+    }
+    addWorldBounds(){
+        //left wall
+        const lBody = new p2.Body({
+            mass: 0,
+            position: [0, MAX_Y / 2]
+        });
+        const lShape = new p2.Box({
+            width: 1,
+            height: MAX_Y
+        });
+        lBody.addShape(lShape);
+        this.world.addBody(lBody);
+        //right wall
+        const rBody = new p2.Body({
+            mass: 0,
+            position: [MAX_X, MAX_Y / 2]
+        });
+        const rShape = new p2.Box({
+            width: 1,
+            height: MAX_Y
+        });
+        rBody.addShape(rShape);
+        this.world.addBody(rBody);
+        //top wall
+        const tBody = new p2.Body({
+            mass: 0,
+            position: [MAX_X / 2, 0]
+        });
+        const tShape = new p2.Box({
+            width: MAX_X,
+            height: 1
+        });
+        tBody.addShape(tShape);
+        this.world.addBody(tBody);
+        //bottom wall
+        const bBody = new p2.Body({
+            mass: 0,
+            position: [MAX_X / 2, MAX_Y]
+        });
+        const bShape = new p2.Box({
+            width: MAX_X,
+            height: 1
+        });
+        bBody.addShape(bShape);
+        this.world.addBody(bBody);
     }
     updateLeaderboard(){
         const arr = this.players.map(x => {
@@ -89,7 +184,12 @@ class Game{
     }
     addPlayer(player){
         this.players.push(player);
+        this.world.addBody(player.body);
         player.roomId = this.id;
+        player.game = this;
+        player.x = MAX_X / 2;
+        player.y = MAX_Y / 2;
+        player.insideObject();
         this.updateLeaderboard();
     }
     tick(io){
@@ -128,7 +228,7 @@ class Game{
     // second array is info for each tree, 0 is x, 1 is y, 3 is radius.
     circleBoundaries() {
         if (this.maptype === FORESTID) {
-            circles = [];
+            let circles = [];
             for (var i = 0; i < this.mapobjects.length; i++) {
                 circles[i] = [
                     this.mapobjects[i].x,
