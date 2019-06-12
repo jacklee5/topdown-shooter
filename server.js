@@ -121,7 +121,7 @@ setInterval(() => {
     }
 }, 1000 / 60)
 
-http.listen(3000 || process.env.PORT, function () {
+http.listen(80, function () {
     console.log('listening on *:3000');
 });
 

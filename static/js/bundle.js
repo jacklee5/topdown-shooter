@@ -172,9 +172,10 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let players = [];
 let bullets = [];
+let inventory = [];
 let timeRemaining;
 //which player is the user
-let user;
+let user = {inventory: []};
 let height = window.innerHeight;
 let width = window.innerWidth;
 canvas.style.height = height + "px";
@@ -280,6 +281,16 @@ const drawBullet = (bullet) => {
     ctx.restore();
 }
 
+//returns true if the inventories are the same
+const compareInventories = (inv1, inv2) => {
+    if(inv1.length !== inv2.length) return false;
+    for(let i = 0; i < inv1.length; i++){
+        if(inv1[i].weapon !== inv2[i].weapon && inv1[i].magazine)
+            return false;
+    }
+    return true;
+}
+
 //draw loop
 const draw = () => {
     if(!inGame) return;
@@ -295,8 +306,15 @@ const draw = () => {
     //find out which person is the user
     for(let i = 0; i < players.length; i++){
         const player = players[i];
+        const old = user.inventory;
         if(player.id === socket.id)
             user = player;
+        if(!compareInventories(user.inventory, old)){
+            const inv = user.inventory;
+            for(let i = 0; i < inv.length; i++){
+                
+            }
+        }
     }
 
     if(user)

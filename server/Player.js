@@ -194,6 +194,7 @@ class Player{
             inv[i].magazine = WEAPONS[inv[i].weapon].magazine;
         }
         console.log(inv);
+        this.mouseDown = false;
     }
     deactivate(){
         const players = this.game.players;
@@ -242,7 +243,8 @@ class Player{
             animationProgress: this.animationProgress,
             animation: this.animation,
             magazine: this.magazine,
-            kills: this.kills
+            kills: this.kills,
+            inventory: this.inventory
         }
     }
     get x(){

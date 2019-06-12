@@ -74,7 +74,7 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 3));
-        this.maptype = FORESTID;
+        this.maptype = CITYID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
@@ -243,9 +243,9 @@ class Game{
     tick(io){
         if(this.timeRemaining === 0){
             this.io.in(this.id).emit("game over");
-        }else{
-            this.timeRemaining--;
         }
+        if(this.timeRemaining < 0) return;
+        this.timeRemaining--;
         //update players
         for(let i = 0; i < this.players.length; i++)
             this.players[i].update();
