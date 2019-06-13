@@ -377,6 +377,8 @@ const draw = () => {
             drawPlayer(player);
         }
 
+        drawTreeTops();
+
         //draw player health
         //outer thing
         fill("#E0E0E0");
@@ -391,6 +393,7 @@ const draw = () => {
             fill("red");
         drawRect(width / 2 - 196, height - 71, (health > 0 ? health / 100 : 0) * 392, 32)
     }
+
 
     //update time
     if(timeRemaining){
@@ -540,8 +543,18 @@ function drawBackground(){
     }
 }
 
+function drawTreeTops() {
+    for (var i = 0; i < mapobjects.length; i++) {
+        ctx.fillStyle = "rgba(64, 128, 64, .9)";
+        ctx.beginPath();
+        ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 35, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
+
 function drawMap() {
     if (maptype === FORESTID) {
+        socket.on("trees", data => mapobjects = data);
         ctx.fillStyle = "#FF8000";
         for (var i = 0; i < mapobjects.length; i++) {
             ctx.beginPath();
@@ -606,7 +619,5 @@ function realCoords(coord, axis) {
 function doRect(x,y,dx,dy) {
     ctx.fillRect(realCoords(x, 0) - user.x + width / 2, realCoords(y, 1) - user.y + height / 2, realCoords(dx, 0), realCoords(dy, 1));
 }
-
-
 
 },{"../../shared/constants.js":1}]},{},[2]);
