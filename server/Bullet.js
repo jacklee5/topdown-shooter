@@ -41,7 +41,6 @@ class Bullet{
                 bullets.splice(i, 1);
             }
         }
-        this.game.mapHitCheck(this.x, this.y, this.damage);
         this.game.world.removeBody(this.body);
     }
     get x(){

@@ -86,7 +86,8 @@ const CONSTANTS = {
     ROLES: {
         PLAYER: 1,
         BULLET: 2,
-        BORDER: 3
+        BORDER: 3,
+        TREE: 4
     },
 }
 module.exports = CONSTANTS;

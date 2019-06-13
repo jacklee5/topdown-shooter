@@ -31,7 +31,13 @@ class Game{
             notholes: this.notholes,
             walls: this.walls,
             maptype: this.maptype,
-            mapobjects: this.mapobjects,
+            mapobjects: this.mapobjects.map(item => {
+            return {
+                x: item.x,
+                y: item.y,
+                health: item.health
+            }
+        }),
             hazards: this.hazards,
             roads: this.roads
         }
@@ -44,11 +50,18 @@ class Game{
             if(!(a.role === ROLES.BULLET || b.role === ROLES.BULLET)) return;
             let player;
             let bullet;
+            let tree;
             if(a.role === ROLES.BULLET && b.role === ROLES.PLAYER){
                 player = b.parent;
                 bullet = a.parent;
             }else if(a.role === ROLES.PLAYER && b.role === ROLES.BULLET){
                 player = a.parent;
+                bullet = b.parent;
+            }else if(a.role === ROLES.BULLET && b.role === ROLES.TREE){
+                tree = b.parent;
+                bullet = a.parent;
+            }else if(a.role === ROLES.TREE && b.role === ROLES.BULLET){
+                tree = a.parent;
                 bullet = b.parent;
             }else if(a.role === ROLES.BULLET && b.role === ROLES.BULLET){
                 return;
@@ -65,6 +78,26 @@ class Game{
                     bullet.origin.kill(player);
                 }
             }
+            if(tree){
+                tree.health -= bullet.damage;
+                if(tree.health < 0){
+                    this.world.removeBody(tree.body);
+                    const trees = this.mapobjects;
+                    for(let i = 0; i < trees.length; i++){
+                        if(trees[i] === tree){
+                            this.mapobjects.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+                this.io.in(this.id).emit("trees", this.mapobjects.map(item => {
+                    return {
+                        x: item.x,
+                        y: item.y,
+                        health: item.health
+                    }
+                }));
+            }
             bullet.destroy();
         })
     }
@@ -73,26 +106,11 @@ class Game{
         return Math.random();
     }
 
-
-    mapHitCheck(x, y, damage) {
-        for (let i = 0; i < this.mapobjects.length; i++) {
-            let distance = Math.sqrt(Math.pow(x - this.mapobjects[i].x, 2) + Math.pow(y - this.mapobjects[i].y, 2));
-            if (distance <= this.mapobjects[i].health / 5 + 5) {
-                this.mapobjects[i].health -= damage;
-            }
-
-
-            if (this.mapobjects[i].health <= 0) {
-                this.mapobjects.splice(i, 1);
-                break;
-            }
-
-        }
-        this.io.in(this.id).emit("trees", this.mapobjects);
-    }
+    //here lies maphitcheck
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 3));
+        this.maptype = FORESTID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
@@ -171,6 +189,11 @@ class Game{
             });
             body.addShape(shape);
             this.world.addBody(body);
+            if(this.maptype === FORESTID){
+                this.mapobjects[i].body = body;
+                body.role = ROLES.TREE;
+                body.parent = this.mapobjects[i];
+            }
         }
     }
     addWorldBounds(){
