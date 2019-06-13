@@ -59,14 +59,39 @@ body {
 #death_message{
     font-size: 100px;
     margin-top: 30vh;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
 }
 
-#respawn-button{
-    background-color:#a7b5cc;
-    font-size: 40px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-
+#username{
+    margin-right: 7px;
 }
 
+
+.button {
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #000;
+    background-color: #becbe0;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    font-family:"Comic Sans MS", cursive, sans-serif;
+  }
+  
+  .button:hover {background-color: #96a1b3}
+  
+  .button:active {
+    background-color: #7b8391;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  #play_button{
+      padding: 0px 5px 4px 5px;
+      font-size: 16px;
+  }
