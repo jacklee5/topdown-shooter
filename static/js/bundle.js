@@ -49,7 +49,7 @@ const CONSTANTS = {
         2: {
             damage: 12,
             speed: 1800,
-            cooldown: 0,
+            cooldown: 15,
             auto: true,
             length: 34,
             magazine: 30,
