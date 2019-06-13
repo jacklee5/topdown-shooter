@@ -72,9 +72,27 @@ class Game{
         return Math.random();
     }
 
+
+    mapHitCheck(x, y, damage) {
+        for (let i = 0; i < this.mapobjects.length; i++) {
+            let distance = Math.sqrt(Math.pow(x - this.mapobjects[i].x, 2) + Math.pow(y - this.mapobjects[i].y, 2));
+            if (distance <= this.mapobjects[i].health / 5 + 5) {
+                this.mapobjects[i].health -= damage;
+            }
+
+
+            if (this.mapobjects[i].health <= 0) {
+                this.mapobjects.splice(i, 1);
+                break;
+            }
+
+        }
+        this.io.in(this.id).emit("trees", this.mapobjects);
+    }
+
     createMap() {
         this.maptype = Math.floor((Math.random() * 3));
-        this.maptype = CITYID;
+        this.maptype = FORESTID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
