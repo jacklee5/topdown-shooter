@@ -32,7 +32,7 @@ const CONSTANTS = {
     WEAPONS: {
         FISTS: 0,
         0: {
-            damage: 10
+            damage: 25
         },
         PISTOL: 1,
         1: {
@@ -46,12 +46,12 @@ const CONSTANTS = {
         },
         AR: 2,
         2: {
-            damage: 1,
+            damage: 12,
             speed: 1800,
             cooldown: 0,
             auto: true,
             length: 34,
-            magazine: 300,
+            magazine: 30,
             spread: 8,
             reload: 1
         },
