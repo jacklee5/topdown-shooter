@@ -179,13 +179,13 @@ const drawPlayer = (player) => {
 }
 
 const drawBullet = (bullet) => {
+    const trailLength = 45;
     let x = bullet.x - user.x + width / 2;
     let y = bullet.y - user.y + height / 2;
+    if(x < -trailLength || x > width + trailLength || y < -trailLength || y > height + trailLength) return;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(bullet.rotation);
-
-    const trailLength = 45;
     for(let i = 0; i < trailLength; i++){
         fill(`rgba(255,255,255,${0.8 - (i)/trailLength})`)
         drawCircle(-i, 0, CONSTANTS.BULLET_SIZE - (i * (CONSTANTS.BULLET_SIZE / 2)) / trailLength) + CONSTANTS.BULLET_SIZE / 2;
@@ -212,8 +212,6 @@ const compareInventories = (inv1, inv2) => {
 const getIndex = () => {
     const inv = user.inventory;
     for(let i = 0; i < inv.length; i++){
-        console.log(user.weapon);
-        console.log(inv);
         if(inv[i].weapon === user.weapon)
             return i;
     }

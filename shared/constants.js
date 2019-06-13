@@ -46,12 +46,12 @@ const CONSTANTS = {
         },
         AR: 2,
         2: {
-            damage: 12,
+            damage: 1,
             speed: 1800,
-            cooldown: 5,
+            cooldown: 0,
             auto: true,
             length: 34,
-            magazine: 30,
+            magazine: 300,
             spread: 8,
             reload: 1
         },

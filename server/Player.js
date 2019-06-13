@@ -63,6 +63,7 @@ class Player{
     }
     fire(){
         this.mouseDown = true;
+        if(this.reloadTimeout) return;
         if(this.weapon === WEAPONS.FISTS){
             if(this.animating) return;
             let rand = Math.floor(Math.random() * 2);
@@ -88,7 +89,7 @@ class Player{
     update(){
         //movement
         let movementSpeed = this.movementSpeed;
-        if(this.reloadTimeout) 
+        if(this.reloadTimeout || (WEAPONS[this.weapon].auto && this.mouseDown && !this.reloadTimeout)) 
             movementSpeed /= 2;
         this.body.velocity = [0, 0];
         if((this.movement.up || this.movement.down) && (this.movement.left || this.movement.right))
@@ -155,7 +156,7 @@ class Player{
 
         if(this.attackCooldown > 0)
             this.attackCooldown--;
-        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0 && this.mouseDown){
+        if(WEAPONS[this.weapon].auto && this.attackCooldown === 0 && this.mouseDown && !this.reloadTimeout){
             this.fire();
         }
 
