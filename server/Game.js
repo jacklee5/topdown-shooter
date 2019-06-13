@@ -80,6 +80,7 @@ class Game{
             }
             if(tree){
                 tree.health -= bullet.damage;
+                tree.body.shapes[0].radius = tree.health / 5 + 5;
                 if(tree.health < 0){
                     this.world.removeBody(tree.body);
                     const trees = this.mapobjects;
@@ -110,7 +111,6 @@ class Game{
 
     createMap() {
         this.maptype = Math.floor((Math.random() * 3));
-        this.maptype = FORESTID;
         if (this.maptype === FORESTID) {
             for (let i = 0; i < MAX_TREES; i++) {
                 this.mapobjects.push({
