@@ -69,7 +69,12 @@ io.on('connection', function (socket) {
         const player = players[socket.id];
         if(!player) return;
         console.log(`[DEBUG] user ${player.name} disconnected`);
+        const game = player.game;
         player.leaveGame();
+        if(!game) return;
+        if(game.players.length === 0)
+            delete games[game.id];
+        
     })
     socket.on("fire", () => {
         const player = players[socket.id];
@@ -111,11 +116,18 @@ io.on('connection', function (socket) {
         if(!player) return;
         player.switchWeapon(x);
     });
+    socket.on("game over", () => {
+        console.log("game over")
+    })
 });
 
 //main loop
 setInterval(() => {
     for(let i in games){
+        if(games[i].finished) {
+            delete games[i];
+            continue;
+        }
         games[i].tick(io);
         io.in(i).emit("state", games[i].toObject());
     }
