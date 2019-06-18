@@ -35,6 +35,7 @@ const createGame = () => {
 io.on('connection', function (socket) {
     console.log('[DEBUG] a user connected');
     socket.on("new player", (username) => {
+        if(username.length > 15) return;
         const player = new Player(username, socket.id);
         player.socket = socket;
         let roomId;
@@ -120,8 +121,6 @@ io.on('connection', function (socket) {
         console.log("game over")
     })
 });
-let start = Date.now();
-let runs = 0;
 //main loop
 setInterval(() => {
     for(let i in games){
@@ -131,12 +130,6 @@ setInterval(() => {
         }
         games[i].tick(io);
         io.in(i).emit("state", games[i].toObject());
-    }
-    runs++;
-    if(Date.now() - start > 1000){
-        console.log(runs);
-        runs = 0;
-        start = Date.now();
     }
 }, 1000 / 60)
 
