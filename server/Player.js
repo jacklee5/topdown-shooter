@@ -167,8 +167,10 @@ class Player{
     }
     kill(player){
         player.socket.emit("death");
-        if(this.game.gameType === GAME_MODES.DEATHMATCH)
+        if(this.game.gameType === "Deathmatch")
             this.score++;
+        else if(this.game.gameType === "CTF")
+            this.score--;
         this.game.updateLeaderboard();
         player.deactivate();
     }
