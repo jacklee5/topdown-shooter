@@ -17,6 +17,17 @@
             <div>
                 <img src="\static\img\heartBerd.png" id = "bird_pic" width=200 height=200 >
                 <div>
+                    <form a> <!--New Map Select Form-->
+                        <label for="maps">Choose a map:</label>
+                        <select name="maps" id="maps">
+                          <option value=0>Forest</option>
+                          <option value=1>City</option>
+                          <option value=2>Iceberg</option>
+                          <!-- <option value=3>CTF</option> -->
+                        </select>
+                        <br><br>
+                        <input type="submit" value="Submit">
+                      </form>
                     <form id = "join-form">
                         <input autofocus id = "username" placeholder = "Enter your name">
                         <button class = "button" id = "play_button">play</button>
@@ -29,7 +40,7 @@
             <canvas id = "game"></canvas>
             <div id = "game-info" style = "pointer-events: none">
                 <center id = "map-info">
-                    <span id = "map-name">Forest</span> - <span id = "game-mode"></span>
+                    <span id = "map-name">Forest</span> - <span id = "game-mode">Deathmatch</span>
                 </center>
                 <center id = "game-over-message" style = "display: none;">
                     Game over!
