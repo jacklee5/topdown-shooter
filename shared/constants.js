@@ -6,7 +6,8 @@ const CONSTANTS = {
 	MAX_Y: 1080,
 	FORESTID: 0,
 	CITYID: 1,
-	ICEID: 2,
+    ICEID: 2,
+    CTF: 3,
     MAP_NAMES: ["Forest", "City", "Iceberg"],
 	HALFROAD: (1920 / 30),
 	TREE: {

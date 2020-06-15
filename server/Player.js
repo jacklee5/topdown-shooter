@@ -104,9 +104,19 @@ class Player{
             this.body.velocity[0] = movementSpeed;
 
         //check if you accidentally played yourself
-        if(this.game.maptype === ICEID){
-            if(dist(this.x, this.y, MAX_X / 2, MAX_Y / 2) > MAX_X / 3){
-                this.die();
+        for (let i = 0; i < this.game.killzones.length; i++) {
+            let inside = false;
+            if (this.game.killzones[i].type === "rect") {
+                inside = this.game.killzones[i].cord1[0] < this.x && this.game.killzones[i].cord2[0] > this.x && this.game.killzones[i].cord1[1] > this.y && this.game.killzones[i].cord2[1] < this.y;
+            } else if (this.game.killzones[i].type === "circle") {
+                inside = dist(this.x, this.y, this.game.killzones[i].cord[0], this.game.killzones[i].cord[1]) < this.game.killzones[i].radius;
+            }
+            if (this.game.killzones[i].invert === 0) {
+                if (inside)
+                    this.die();
+            } else {
+                if (!inside)
+                    this.die();
             }
         }
 

@@ -14,22 +14,23 @@ const TREE = CONSTANTS.TREE;
 const CAR = CONSTANTS.CAR;
 const SNAKE = CONSTANTS.SNAKE;
 
-var notholes;
-var walls;
 var maptype;
 var mapobjects;
 var hazards;
-var roads;
+var killzones;
+var shapes;
+var boundaries;
 
+// [rewrite] receive server map data
 var clientData;
 socket.on("map", data =>
     {
-        notholes = data.notholes;
-        walls = data.walls;
         maptype = data.maptype;
         mapobjects = data.mapobjects;
         hazards = data.hazards;
-        roads = data.roads;
+        killzones = data.killzones;
+        shapes = data.shapes;
+        boundaries = data.boundaries;
         document.getElementById("map-name").textContent = CONSTANTS.MAP_NAMES[maptype];
     }
 );
@@ -260,17 +261,19 @@ const draw = () => {
         }
     }
 
-    if(user)
-        drawBackground();
+    if (user) {
+        drawMap();
+    }
 
     //draw bullets
     for(let i = 0; i < bullets.length; i++){
         drawBullet(bullets[i]);
     }
 
-    //draw map
-    if(user)
-        drawMap();
+    // [rewrite] loop to draw map to screen
+    if(user) {
+        drawTreeTops();
+    }
 
     if(user)
         showWeapon();
@@ -282,7 +285,6 @@ const draw = () => {
             drawPlayer(player);
         }
 
-        drawTreeTops();
 
         //draw player health
         //outer thing
@@ -416,48 +418,20 @@ socket.on("done reloading", () => {
     document.getElementById("message").style.display = "none";
 })
 
-function drawBackground(){
-    ctx.fillStyle = "#008000";
-    ctx.fillRect(0, 0, width, height);
-    if(maptype === CITYID){
-        ctx.fillStyle = "#A0A0A0";
-        for (var i = 0; i < roads.length; i++) {
-            if (roads[i][0] === 1) {
-                doRect((roads[i][1] - 1.5 * HALFROAD), 0, 3 * HALFROAD, MAX_Y);
-            }
-            if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - 1.5 * HALFROAD), MAX_X, 3 * HALFROAD);
-            }
-        }
-        ctx.fillStyle = "#808080";
-        for (var i = 0; i < roads.length; i++) {
-            if (roads[i][0] === 1) {
-                doRect((roads[i][1] - HALFROAD), 0, 2 * HALFROAD, MAX_Y);
-            }
-            if (roads[i][0] === 0) {
-                doRect(0, (roads[i][1] - HALFROAD), MAX_X, 2 * HALFROAD);
-            }
-        }
-    }else if(maptype === ICEID){
-        ctx.fillStyle = "#00FFFF";
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = "#80FFFF";
-        ctx.beginPath();
-        ctx.arc(MAX_X / 2 - user.x + width / 2, MAX_Y / 2 - user.y + height / 2, MAX_X / 3, 0, 2 * Math.PI);
-        ctx.fill();
-    }
-}
-
-function drawTreeTops() {
-    for (var i = 0; i < mapobjects.length; i++) {
-        ctx.fillStyle = "rgba(64, 128, 64, .9)";
-        ctx.beginPath();
-        ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 35, 0, 2 * Math.PI);
-        ctx.fill();
-    }
-}
-
 function drawMap() {
+    for (let i = 0; i < shapes.length; i++) {
+        if (shapes[i].type === "background") {
+            ctx.fillStyle = shapes[i].color;
+            ctx.beginPath();
+            ctx.rect(0, 0, width, height);
+            ctx.closePath();
+            ctx.fill();
+        } else if (shapes[i].type === "rect") {
+            doRect(shapes[i].color, shapes[i].cord1[0], shapes[i].cord1[1], shapes[i].cord2[0], shapes[i].cord2[1]);
+        } else if (shapes[i].type === "circle") {
+            doCircle(shapes[i].color, shapes[i].cord[0], shapes[i].cord[1], shapes[i].radius);
+        }
+    }
     if (maptype === FORESTID) {
         socket.on("trees", data => mapobjects = data);
         ctx.fillStyle = "#FF8000";
@@ -466,61 +440,32 @@ function drawMap() {
             ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 5, 0, 2 * Math.PI);
             ctx.fill();
         }
-    } else if (maptype === CITYID) {
-        ctx.fillStyle = "#404040";
-        for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0]), (walls[i][1]), (walls[i][2] - walls[i][0]), (walls[i][3] - walls[i][1]));
-        }
-
-        ctx.fillStyle = "#808080";
-        for (var i = 0; i < walls.length; i++) {
-            doRect((walls[i][0] + HALFROAD / 2), (walls[i][1] + HALFROAD / 2), (walls[i][2] - walls[i][0] - HALFROAD), (walls[i][3] - walls[i][1] - HALFROAD));
-        }
-
-        
-    } 
-    // else if (maptype === ROOFID) {
-    //     ctx.fillStyle = "#A0A0A0";
-    //     for (var i = 0; i < roads.length; i++) {
-    //         if (roads[i][0] === 1) {
-    //             doRect((roads[i][1] - 1.5 * HALFROAD), 0, 3 * HALFROAD, MAX_Y);
-    //         }
-    //         if (roads[i][0] === 0) {
-    //             doRect(0, (roads[i][1] - 1.5 * HALFROAD), MAX_X, 3 * HALFROAD);
-    //         }
-    //     }
-
-    //     ctx.fillStyle = "#808080";
-    //     for (var i = 0; i < roads.length; i++) {
-    //         if (roads[i][0] === 1) {
-    //             doRect((roads[i][1] - HALFROAD), 0, 2 * HALFROAD, MAX_Y);
-    //         }
-    //         if (roads[i][0] === 0) {
-    //             doRect(0, (roads[i][1] - HALFROAD), MAX_X, 2 * HALFROAD);
-    //         }
-    //     }
-
-    //     ctx.fillStyle = "#404040";
-    //     for (var i = 0; i < walls.length; i++) {
-    //         doRect((walls[i][0]), (walls[i][1]), (walls[i][2] - walls[i][0]), (walls[i][3] - walls[i][1]));
-    //     }
-
-    //     ctx.fillStyle = "#808080";
-    //     for (var i = 0; i < walls.length; i++) {
-    //         doRect((walls[i][0] + HALFROAD / 2), (walls[i][1] + HALFROAD / 2), (walls[i][2] - walls[i][0] - HALFROAD), (walls[i][3] - walls[i][1] - HALFROAD));
-    //     }
-
-    // } 
-}
-
-function realCoords(coord, axis) {
-    if (axis === 0) {
-        return coord;
-    } else if (axis === 1) {
-        return coord;
     }
 }
 
-function doRect(x,y,dx,dy) {
-    ctx.fillRect(realCoords(x, 0) - user.x + width / 2, realCoords(y, 1) - user.y + height / 2, realCoords(dx, 0), realCoords(dy, 1));
+function drawTreeTops() {
+    for (let i = 0; i < mapobjects.length; i++) {
+        ctx.fillStyle = "rgba(64, 128, 64, .9)";
+        ctx.beginPath();
+        ctx.arc(mapobjects[i].x + width / 2 - user.x, mapobjects[i].y + height / 2 - user.y, mapobjects[i].health / 5 + 35, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
+
+function doRect(color, x1, y1, x2, y2) {
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+    ctx.fillStyle = color;
+    
+    ctx.beginPath();
+    ctx.rect(x1 - user.x + width / 2, y1 - user.y + height / 2, dx, dy);
+    ctx.closePath();
+    ctx.fill();
+}
+
+function doCircle(color, x, y, rad) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x - user.x + width / 2, y - user.y + height / 2, rad, 0, 2 * Math.PI);
+    ctx.fill();
 }
