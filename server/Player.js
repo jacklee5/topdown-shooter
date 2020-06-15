@@ -236,6 +236,12 @@ class Player{
     leaveGame(){
         const game = this.game;
         const players = game.players;
+        if(game.gameType === "CTF"){
+            if(this.team === 1)
+                game.team1Count--;
+            else
+                game.team2Count--;
+        }
         for(let i = 0; i < players.length; i++){
             if(players[i].id === this.id){
                 return players.splice(i, 1);

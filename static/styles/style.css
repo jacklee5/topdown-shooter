@@ -95,3 +95,10 @@ body {
       padding: 0px 5px 4px 5px;
       font-size: 16px;
   }
+
+#team1-score{
+    color: red;
+}
+#team2-score{
+    color: blue;
+}

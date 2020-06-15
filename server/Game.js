@@ -18,8 +18,8 @@ class Game{
         this.gameType = "CTF";
 
         if(this.gameType === "CTF"){
-            this.team1 = [];
-            this.team2 = [];
+            this.team1Count = 0;
+            this.team2Count = 0;
         }
 
         this.killzones = [];
@@ -770,7 +770,8 @@ class Game{
         const arr = this.players.map(x => {
             return {
                 name: x.name,
-                score: x.score
+                score: x.score,
+                team: x.team
             }
         });
         arr.sort((a, b) => {
@@ -787,12 +788,12 @@ class Game{
         player.roomId = this.id;
         player.game = this;
         if(this.gameType === "CTF"){
-            if(this.team1.length < this.team2.length){
-                this.team1.push(player);
+            if(this.team1Count < this.team2Count){
+                this.team1Count++;
                 player.team = 1;
             }
             else{
-                this.team2.push(player);
+                this.team2Count++;
                 player.team = 2;
             }
         }

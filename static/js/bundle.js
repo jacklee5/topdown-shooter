@@ -132,6 +132,11 @@ socket.on("game mode", gameMode => {
     console.log(gameMode)
     document.getElementById("game-mode").textContent = gameMode;
     gameType = gameMode;
+    if(gameMode === "Deathmatch"){
+        document.getElementById("ctf-score").style.display = "none";
+    } else if(gameMode === "CTF"){
+        document.getElementById("ctf-score").style.display = "block";
+    }
 })
 
 
@@ -502,7 +507,7 @@ socket.on("leaderboard", data => {
     for(let i = 0; i < data.length; i++){
         el.innerHTML += `<tr>
             <td>${i + 1}</td>
-            <td>${data[i].name}</td>
+            <td style = "color: ${data[i].team === 1 ? "red" : "blue"}">${data[i].name}</td>
             <td>${data[i].score}</td>
         </tr>`
     }
