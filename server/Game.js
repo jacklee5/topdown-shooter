@@ -14,7 +14,7 @@ class Game{
         });
         this.io = io;
 
-        this.gameType = GAME_MODES.DEATHMATCH;
+        this.gameType = GAME_MODES[Math.floor(Math.random() * GAME_MODES.length)];
 
         this.killzones = [];
         this.shapes = [];

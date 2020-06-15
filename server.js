@@ -55,6 +55,7 @@ io.on('connection', function (socket) {
         socket.join(roomId);
         games[roomId].addPlayer(player);
         socket.emit("map", games[roomId].map);
+        socket.emit("game mode", games[roomId].gameType)
         players[socket.id] = player;
 
         console.log(`[DEBUG] user ${username} in joined room ${roomId}`)

@@ -80,10 +80,7 @@ const CONSTANTS = {
             length: 15
         }
     }, 
-    GAME_MODES: {
-        DEATHMATCH: 0
-    },
-    MODE_NAMES: ["Deathmatch"],
+    GAME_MODES: ["Deathmatch", "CTF"],
     ROLES: {
         PLAYER: 1,
         BULLET: 2,
@@ -129,6 +126,10 @@ socket.on("map", data =>
         document.getElementById("map-name").textContent = CONSTANTS.MAP_NAMES[maptype];
     }
 );
+socket.on("game mode", gameMode => {
+    console.log(gameMode)
+    document.getElementById("game-mode").textContent = gameMode;
+})
 
 
 // require("script.js");

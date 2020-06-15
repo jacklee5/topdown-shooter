@@ -79,10 +79,7 @@ const CONSTANTS = {
             length: 15
         }
     }, 
-    GAME_MODES: {
-        DEATHMATCH: 0
-    },
-    MODE_NAMES: ["Deathmatch"],
+    GAME_MODES: ["Deathmatch", "CTF"],
     ROLES: {
         PLAYER: 1,
         BULLET: 2,

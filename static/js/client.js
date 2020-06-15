@@ -34,6 +34,10 @@ socket.on("map", data =>
         document.getElementById("map-name").textContent = CONSTANTS.MAP_NAMES[maptype];
     }
 );
+socket.on("game mode", gameMode => {
+    console.log(gameMode)
+    document.getElementById("game-mode").textContent = gameMode;
+})
 
 
 // require("script.js");
