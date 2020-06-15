@@ -54,6 +54,7 @@ class Game{
             let player;
             let bullet;
             let tree;
+            let flag;
             if(a.role === ROLES.BULLET && b.role === ROLES.PLAYER){
                 player = b.parent;
                 bullet = a.parent;
