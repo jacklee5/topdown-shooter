@@ -265,7 +265,8 @@ class Player{
             magazine: this.magazine,
             kills: this.score,
             inventory: this.inventory,
-            currentWeapon: this.currentWeapon
+            currentWeapon: this.currentWeapon,
+            team: this.team
         }
     }
     get x(){

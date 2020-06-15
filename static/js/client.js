@@ -21,6 +21,8 @@ var killzones;
 var shapes;
 var boundaries;
 
+var gameType;
+
 // [rewrite] receive server map data
 var clientData;
 socket.on("map", data =>
@@ -37,6 +39,7 @@ socket.on("map", data =>
 socket.on("game mode", gameMode => {
     console.log(gameMode)
     document.getElementById("game-mode").textContent = gameMode;
+    gameType = gameMode;
 })
 
 
@@ -132,6 +135,8 @@ const drawPlayer = (player) => {
     let y = player.y - user.y + height / 2;
     let r = player.rotation;
     fill("#ffcd94");
+    if(gameType && gameType === "CTF")
+        fill(player.team === 1 ? "#ff0000" : "#0000ff");
 
     ctx.save();
     ctx.translate(x, y);
