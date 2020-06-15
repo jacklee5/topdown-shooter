@@ -8,7 +8,7 @@ const CONSTANTS = {
 	CITYID: 1,
     ICEID: 2,
     CTF: 3,
-    MAP_NAMES: ["Forest", "City", "Iceberg"],
+    MAP_NAMES: ["Forest", "City", "Iceberg", "Divide"],
 	HALFROAD: (1920 / 30),
 	TREE: {
 	    health: 100

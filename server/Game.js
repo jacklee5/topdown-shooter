@@ -15,6 +15,12 @@ class Game{
         this.io = io;
 
         this.gameType = GAME_MODES[Math.floor(Math.random() * GAME_MODES.length)];
+        this.gameType = "CTF";
+
+        if(this.gameType === "CTF"){
+            this.team1 = [];
+            this.team2 = [];
+        }
 
         this.killzones = [];
         this.shapes = [];
@@ -116,7 +122,9 @@ class Game{
 
     // [rewrite] create map
     createMap() {
-        this.maptype = Math.floor((Math.random() * 4));
+        this.maptype = Math.floor((Math.random() * 3));
+        if (this.gameType === "CTF")
+            this.maptype = CTF;
         if (this.maptype === FORESTID) {
             this.shapes.push(
                 {
@@ -778,6 +786,16 @@ class Game{
         this.world.addBody(player.body);
         player.roomId = this.id;
         player.game = this;
+        if(this.gameType === "CTF"){
+            if(this.team1.length < this.team2.length){
+                this.team1.push(player);
+                player.team = 1;
+            }
+            else{
+                this.team2.push(player);
+                player.team = 2;
+            }
+        }
         this.spawnPlayer(player);
         this.updateLeaderboard();
     }
@@ -787,7 +805,18 @@ class Game{
             let t = Math.random() * 2 * Math.PI;
             player.x = Math.round(MAX_X / 2 + r * Math.cos(t));
             player.y = Math.round(MAX_Y / 2 + r * Math.sin(t));
-        }else{
+        }else if(this.maptype === CTF){
+            let r = Math.random() * 200;
+            let t = Math.random() * 2 * Math.PI;
+            if(player.team === 1)
+                player.x = 240;
+            else
+                player.x = MAX_X - 240;
+            player.y = MAX_Y - 240;
+            player.x += Math.round(r * Math.cos(t));
+            player.y += Math.round(r * Math.sin(t));
+        }
+        else{
             player.x = PLAYER_SIZE + Math.random() * (MAX_X - PLAYER_SIZE * 2);
             player.y = PLAYER_SIZE + Math.random() * (MAX_Y - PLAYER_SIZE * 2);
         }
