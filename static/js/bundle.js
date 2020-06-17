@@ -129,7 +129,7 @@ socket.on("map", data =>
     }
 );
 socket.on("game mode", gameMode => {
-    console.log(gameMode)
+    console.log("on game mode")
     document.getElementById("game-mode").textContent = gameMode;
     gameType = gameMode;
     if(gameMode === "Deathmatch"){
@@ -137,6 +137,7 @@ socket.on("game mode", gameMode => {
     } else if(gameMode === "CTF"){
         document.getElementById("ctf-score").style.display = "block";
     }
+    
 })
 
 
@@ -497,18 +498,29 @@ socket.on("state", state => {
     timeRemaining = state.timeRemaining;
 });
 socket.on("leaderboard", data => {
+    console.log("on leaderboard")
     const el = document.getElementById("ranks");
     el.innerHTML = `
     <tr>
         <th>Rank</th>
         <th>Name</th>
         <th span = "score-type">Kills</th>
+        ${
+            data[0].captures !== undefined ? `<th>Captures</th>` : ""
+        }
     </tr>`;
     for(let i = 0; i < data.length; i++){
+        let nameColor = "black";
+        if(data[i].team)
+            nameColor = (data[i].team === 1 ? "red" : "blue")
+        console.log(data[i].captures);
         el.innerHTML += `<tr>
             <td>${i + 1}</td>
-            <td style = "color: ${data[i].team === 1 ? "red" : "blue"}">${data[i].name}</td>
+            <td style = "color: ${nameColor}">${data[i].name}</td>
             <td>${data[i].score}</td>
+            ${
+                data[i].captures !== undefined ? `<td>${data[i].captures}</td>` : ""
+            }
         </tr>`
     }
 });
