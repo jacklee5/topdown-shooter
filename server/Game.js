@@ -557,13 +557,6 @@ class Game{
             this.boundaries.push(
                 {
                     type: "rect",
-                    cord1: [0, MAX_Y - 40],
-                    cord2: [40, 0]
-                }
-            )
-            this.boundaries.push(
-                {
-                    type: "rect",
                     cord1: [40, MAX_Y - 520],
                     cord2: [140, MAX_Y - 560]
                 }
@@ -586,7 +579,14 @@ class Game{
                 {
                     type: "rect",
                     cord1: [40, 40],
-                    cord2: [0, 480]
+                    cord2: [480, 0]
+                }
+            )
+            this.boundaries.push(
+                {
+                    type: "rect",
+                    cord1: [440, 140],
+                    cord2: [480, 0]
                 }
             )
             //right side
@@ -614,13 +614,6 @@ class Game{
             this.boundaries.push(
                 {
                     type: "rect",
-                    cord1: [MAX_X - 0, MAX_Y - 40],
-                    cord2: [MAX_X - 40, 0]
-                }
-            )
-            this.boundaries.push(
-                {
-                    type: "rect",
                     cord1: [MAX_X - 40, MAX_Y - 520],
                     cord2: [MAX_X - 140, MAX_Y - 560]
                 }
@@ -643,7 +636,14 @@ class Game{
                 {
                     type: "rect",
                     cord1: [MAX_X - 40, 40],
-                    cord2: [MAX_X - 0, 480]
+                    cord2: [MAX_X - 480, 0]
+                }
+            )
+            this.boundaries.push(
+                {
+                    type: "rect",
+                    cord1: [MAX_X - 440, 140],
+                    cord2: [MAX_X - 480, 0]
                 }
             )
             this.boundaries.push(
