@@ -20,6 +20,14 @@ class Game{
         if(this.gameType === "CTF"){
             this.team1Count = 0;
             this.team2Count = 0;
+            // true if on ground, false if on playerawwww
+            this.redFlagDown = true;
+            this.redFlagX = MAX_X - 240;
+            this.redFlaxY = 240;
+
+            this.blueFlagDown = true;
+            this.blueFlagX = 240;
+            this.blueFlagY = 240;
         }
 
         this.killzones = [];
@@ -116,6 +124,17 @@ class Game{
 
     rand() {
         return Math.random();
+    }
+
+    getFlagData(){
+        return {
+            redFlagDown: this.redFlagDown,
+            redFlagX: this.redFlagX,
+            redFlagY: this.redFlayY,
+            blueFlagDown: this.blueFlagDown,
+            blueFlagX: this.blueFlagX,
+            blueFlagY: this.blueFlagY
+        }
     }
 
     //here lies maphitcheck
@@ -771,7 +790,8 @@ class Game{
             return {
                 name: x.name,
                 score: x.score,
-                team: x.team
+                team: x.team,
+                captures: x.captures
             }
         });
         arr.sort((a, b) => {
@@ -796,6 +816,7 @@ class Game{
                 this.team2Count++;
                 player.team = 2;
             }
+            player.captures = 0;
         }
         this.spawnPlayer(player);
         this.updateLeaderboard();
