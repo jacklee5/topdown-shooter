@@ -120,6 +120,47 @@ class Player{
             }
         }
 
+        //check if you picked up a flag
+        if(this.team){
+            if(this.game.blueFlagDown && dist(this.x, this.y, this.game.blueFlagX, this.game.blueFlagY) < 20){
+                if(this.team === 1){
+                    this.game.blueFlagDown = false;
+                    this.game.blueFlagAtBase = false;
+                    this.hasFlag = true;
+                    this.game.updateFlag();
+                }else{
+                    if(this.game.blueFlagAtBase && this.hasFlag){
+                        this.game.team2Score++;
+                        this.hasFlag = false;
+                        this.captures++;
+                        this.game.returnRedFlagToBase();
+                        this.game.updateLeaderboard();
+                    }else{
+                        this.game.returnBlueFlagToBase();
+                    }
+                    this.game.updateFlag();
+                }
+            }else if(this.game.redFlagDown && dist(this.x, this.y, this.game.redFlagX, this.game.redFlagY) < 20){
+                if(this.team === 2){
+                    this.game.redFlagDown = false;
+                    this.game.redFlagAtBase = false;
+                    this.hasFlag = true;
+                    this.game.updateFlag();
+                }else{
+                    if(this.game.redFlagAtBase && this.hasFlag){
+                        this.game.team1Score++;
+                        this.hasFlag = false;
+                        this.captures++;
+                        this.game.returnBlueFlagToBase();
+                        this.game.updateLeaderboard();
+                    }else{
+                        this.game.returnRedFlagToBase();
+                    }
+                    this.game.updateFlag();
+                }
+            }
+        }
+
         //animations
         if(this.animating){
             if(ANIMATIONS[this.animation].length > this.animationProgress)
@@ -172,14 +213,25 @@ class Player{
 
     }
     die(){
+        if(this.hasFlag){
+            if(this.team === 1){
+                this.game.blueFlagDown = true;
+                this.game.blueFlagX = this.x;
+                this.game.blueFlagY = this.y;
+            }else if(this.team === 2){
+                this.game.redFlagDown = true;
+                this.game.redFlagX = this.x;
+                this.game.redFlagY = this.y;
+            }
+            this.game.updateFlag();
+        }
         this.socket.emit("death");
         this.deactivate();
     }
     kill(player){
-        player.socket.emit("death");
         this.score++;
         this.game.updateLeaderboard();
-        player.deactivate();
+        player.die();
     }
     reload(){
         this.reloadTimeout = setTimeout(() => {
@@ -269,7 +321,8 @@ class Player{
             kills: this.score,
             inventory: this.inventory,
             currentWeapon: this.currentWeapon,
-            team: this.team
+            team: this.team,
+            hasFlag: this.hasFlag
         }
     }
     get x(){

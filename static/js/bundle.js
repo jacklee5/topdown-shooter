@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const CONSTANTS = { 
-    MOVEMENT_SPEED: 200,
+    MOVEMENT_SPEED: 600,
     PLAYER_SIZE: 15,
     MAX_TREES: 50,
 	MAX_X: 1920,
@@ -207,6 +207,14 @@ canvas.style.width = width + "px";
 canvas.height = height;
 canvas.width = width;
 
+//flag data
+let redFlagDown = false;
+let redFlagX = 0;
+let redFlagY = 0;
+let blueFlagDown = false;
+let blueFlagX = 0;
+let blueFlagY = 0;
+
 const fill = (f) => {
     ctx.fillStyle = f;
 }
@@ -283,7 +291,7 @@ const drawPlayer = (player) => {
     fill("black");
     ctx.font = '12px sans-serif';
     ctx.textAlign = "center";
-    ctx.fillText(player.name, x, y + CONSTANTS.PLAYER_SIZE + 16);  
+    ctx.fillText(player.name + (player.hasFlag ? " (has flag)" : ""), x, y + CONSTANTS.PLAYER_SIZE + 16);  
 }
 
 const drawBullet = (bullet) => {
@@ -304,6 +312,13 @@ const drawBullet = (bullet) => {
     drawCircle(0, 0, CONSTANTS.BULLET_SIZE);
 
     ctx.restore();
+}
+
+const drawFlag = (color, flagX, flagY) => {
+    let x = flagX - user.x + width / 2;
+    let y = flagY - user.y + height / 2;
+    fill(color);
+    drawCircle(x, y, 20);
 }
 
 //returns true if the inventories are the same
@@ -408,6 +423,11 @@ const draw = () => {
         drawRect(width / 2 - 196, height - 71, (health > 0 ? health / 100 : 0) * 392, 32)
     }
 
+    //draw flags
+    if(redFlagDown)
+        drawFlag("red", redFlagX, redFlagY);
+    if(blueFlagDown)
+        drawFlag("blue", blueFlagX, blueFlagY);
 
     //update time
     if(timeRemaining){
@@ -527,6 +547,18 @@ socket.on("leaderboard", data => {
 socket.on("death", () => {
     changePage(PAGES.GAMEOVER);
 });
+socket.on("flag update", data => {
+    redFlagDown = data.redFlagDown;
+    redFlagX = data.redFlagX;
+    redFlagY = data.redFlagY;
+    blueFlagDown = data.blueFlagDown;
+    blueFlagX = data.blueFlagX;
+    blueFlagY = data.blueFlagY;
+});
+socket.on("update score", data => {
+    document.getElementById("team1-score").textContent = data.team1Score;
+    document.getElementById("team2-score").textContent = data.team2Score;
+})
 socket.on("game over", () => {
     document.getElementById("game-info").style.display = "block";
     document.getElementById("map-info").style.display = "none";
