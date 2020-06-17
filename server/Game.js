@@ -7,6 +7,8 @@ const { GAME_MODES, MAX_TREES, MAX_X, MAX_Y, FORESTID, CITYID, ROOFID, ICEID, CT
 class Game{
     constructor(id, io){
         this.players = [];
+        //these players dont get deactivated
+        this.allPlayers = [];
         this.bullets = [];
         this.id = id;
         this.world = new p2.World({
@@ -20,14 +22,13 @@ class Game{
         if(this.gameType === "CTF"){
             this.team1Count = 0;
             this.team2Count = 0;
-            // true if on ground, false if on playerawwww
-            this.redFlagDown = true;
-            this.redFlagX = MAX_X - 240;
-            this.redFlaxY = 240;
+            // true if on ground, false if on player
+            this.returnRedFlagToBase();
 
-            this.blueFlagDown = true;
-            this.blueFlagX = 240;
-            this.blueFlagY = 240;
+            this.returnBlueFlagToBase();
+
+            this.team1Score = 0;
+            this.team2Score = 0;
         }
 
         this.killzones = [];
@@ -122,6 +123,20 @@ class Game{
         })
     }
 
+    returnBlueFlagToBase(){
+        this.blueFlagDown = true;
+        this.blueFlagX = MAX_X - 240;
+        this.blueFlagY = 240;
+        this.blueFlagAtBase = true;
+    }
+
+    returnRedFlagToBase(){
+        this.redFlagDown = true;
+        this.redFlagX = 240;
+        this.redFlagY = 240;
+        this.redFlagAtBase = true;
+    }
+
     rand() {
         return Math.random();
     }
@@ -130,10 +145,12 @@ class Game{
         return {
             redFlagDown: this.redFlagDown,
             redFlagX: this.redFlagX,
-            redFlagY: this.redFlayY,
+            redFlagY: this.redFlagY,
+            redFlagAtBase: this.redFlagAtBase,
             blueFlagDown: this.blueFlagDown,
             blueFlagX: this.blueFlagX,
-            blueFlagY: this.blueFlagY
+            blueFlagY: this.blueFlagY,
+            blueFlagAtBase: this.blueFlagAtBase
         }
     }
 
@@ -786,7 +803,7 @@ class Game{
         this.world.addBody(bBody);
     }
     updateLeaderboard(){
-        const arr = this.players.map(x => {
+        const arr = this.allPlayers.map(x => {
             return {
                 name: x.name,
                 score: x.score,
@@ -798,16 +815,25 @@ class Game{
             return b.score - a.score;
         })
         this.io.in(this.id).emit("leaderboard", arr);
+        this.io.in(this.id).emit("update score", {
+            team1Score: this.team1Score,
+            team2Score: this.team2Score
+        })
+    }
+    updateFlag(){
+        this.io.in(this.id).emit("flag update", this.getFlagData());
     }
     isJoinable(){
-        return this.players.length < MAX_PLAYERS;
+        return this.allPlayers.length < MAX_PLAYERS;
     }
     addPlayer(player){
         this.players.push(player);
+        this.allPlayers.push(player);
         this.world.addBody(player.body);
         player.roomId = this.id;
         player.game = this;
         if(this.gameType === "CTF"){
+            player.hasFlag = false;
             if(this.team1Count < this.team2Count){
                 this.team1Count++;
                 player.team = 1;
