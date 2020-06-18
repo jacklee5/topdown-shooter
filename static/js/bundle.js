@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const CONSTANTS = { 
-    MOVEMENT_SPEED: 600,
+    MOVEMENT_SPEED: 200,
     PLAYER_SIZE: 15,
     MAX_TREES: 50,
 	MAX_X: 1920,
@@ -315,10 +315,11 @@ const drawBullet = (bullet) => {
 }
 
 const drawFlag = (color, flagX, flagY) => {
+    
     let x = flagX - user.x + width / 2;
     let y = flagY - user.y + height / 2;
     fill(color);
-    drawCircle(x, y, 20);
+    drawRect(x, y, 30, 30);
 }
 
 //returns true if the inventories are the same

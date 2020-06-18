@@ -223,10 +223,11 @@ const drawBullet = (bullet) => {
 }
 
 const drawFlag = (color, flagX, flagY) => {
+    
     let x = flagX - user.x + width / 2;
     let y = flagY - user.y + height / 2;
     fill(color);
-    drawCircle(x, y, 20);
+    drawRect(x, y, 30, 30);
 }
 
 //returns true if the inventories are the same
