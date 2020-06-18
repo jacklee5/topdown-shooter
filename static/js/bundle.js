@@ -346,7 +346,7 @@ const getIndex = () => {
 const showWeapon = () => {
     const els = document.getElementsByClassName("weapon");
     for(let i = 0; i < els.length; i++){
-        els[i].className = "weapon";
+        els[i].className = "weapon";    
     }
     if(els[getIndex()])
         els[getIndex()].className += " active-weapon"

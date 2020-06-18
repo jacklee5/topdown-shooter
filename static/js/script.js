@@ -16,7 +16,6 @@ var roads = [];
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 
-
 let HEIGHT = window.innerHeight;
 let WIDTH = window.innerWidth;
 canvas.style.height = HEIGHT + "px";

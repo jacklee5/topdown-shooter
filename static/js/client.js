@@ -199,7 +199,7 @@ const drawPlayer = (player) => {
     fill("black");
     ctx.font = '12px sans-serif';
     ctx.textAlign = "center";
-    ctx.fillText(player.name + (player.hasFlag ? " (has flag)" : ""), x, y + CONSTANTS.PLAYER_SIZE + 16);  
+    ctx.fillText(player.name + (player.hasFlag ? " (has flag)" : ""), x, y + CONSTANTS.PLAYER_SIZE + 16); 
 }
 
 const drawBullet = (bullet) => {
@@ -223,7 +223,6 @@ const drawBullet = (bullet) => {
 }
 
 const drawFlag = (color, flagX, flagY) => {
-    
     let x = flagX - user.x + width / 2;
     let y = flagY - user.y + height / 2;
     fill(color);
@@ -254,7 +253,7 @@ const getIndex = () => {
 const showWeapon = () => {
     const els = document.getElementsByClassName("weapon");
     for(let i = 0; i < els.length; i++){
-        els[i].className = "weapon";
+        els[i].className = "weapon";    
     }
     if(els[getIndex()])
         els[getIndex()].className += " active-weapon"
