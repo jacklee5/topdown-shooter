@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Circle-Strike: Globular Offensive</title>
+        <meta charset = "utf-8">
+        <link href = "/static/styles/style.css" rel = "stylesheet">
+    </head>
+    <body>
+        <!-- Home -->
+        <div class = "page start">
+            <div style="text-align: center">
+                <div id = "top_page_text">
+                    <h1 id = "title">CIRCLE-STRIKE:<br>GLOBULAR OFFENSIVE</h1>                    
+                    <h3>*Now in new Capture the Flag Flavor*</h3>
+                </div>
+            </div>
+            <div>
+                <img src="\static\img\heartBerd.png" id = "bird_pic" width=200 height=200 >
+                <div>
+                    <form id = "join-form">
+                        <input autofocus id = "username" placeholder = "Enter your name">
+                        <button class = "button" id = "play_button">play</button>
+                    </form>
+                </div> 
+            </div>  
+        </div> 
+        <!-- game -->
+        <div class = "page" id = "game-page">
+            <canvas id = "game"></canvas>
+            <div id = "game-info" style = "pointer-events: none">
+                <center id = "map-info">
+                    <span id = "map-name">Forest</span> - <span id = "game-mode">Deathmatch</span>
+                </center>
+                <center id = "ctf-score">
+                    <span id = "team1-score">0</span> - <span id = "team2-score">0</span>
+                </center>
+                <center id = "game-over-message" style = "display: none;">
+                    Game over!
+                </center>       
+                <table id = "ranks" cellpadding = "8"></table>
+            </div>
+            <!-- time remaining -->
+            <span style = "position: fixed; top: 32px; right: 32px">Time remaining: <span id = "time-remaining"></span></span>
+            <!-- ammo indicator -->
+            <div style = "position:fixed; left: 50%; bottom: 88px; transform: translateX(-50%); text-align: center; font-size: 24px;">
+                <img src = "/static/img/bullet.png" id = "bullet-sprite" style = "height: 24px;position:relative;top:2px;"> <span id = "ammo-amount" style = "line-height: 24px">30</span>
+            </div>
+            <!-- message -->
+            <div style = "position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; display: none;" id = "message">
+                reloading...
+            </div>
+            <!-- weapon select -->
+            <div style = "position: fixed; bottom: 32px; right: 32px">
+                <div style = "position: relative">
+                    <div id = "weapon-selector">
+                        <div id = "weapons"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- death screen -->
+        <div class = "page" id = "death_screen">
+            <h1 id = "death_message">You died!</h1>
+            <button class = "button" id = "respawn-button">Respawn</button>
+        </div>
+        <script src = "/socket.io/socket.io.js"></script>
+        <script src = "/static/js/bundle.js"></script>
+    </body>
+</html>

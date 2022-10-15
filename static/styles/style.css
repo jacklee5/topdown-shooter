@@ -1,0 +1,104 @@
+body {
+    background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet); 
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    margin: 0;
+    text-align: center;
+}
+
+.page{
+    display: none;
+}
+.start{
+    display: block;
+}
+#game-page *::selection{
+    background: transparent;
+}
+#game-page *{
+    pointer-events: none;
+    
+}
+
+#title{
+    margin-bottom: 0;
+    font-size: 80px;
+}
+.weapon{
+    opacity: 0.5;
+}
+.active-weapon{
+    opacity: 1;
+}
+
+
+#top_page_text{
+    text-align: center;
+}
+
+#bird_pic{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#join-form{
+    padding-top: 30px;
+    text-align: center;
+}
+
+#game-info{
+    display: none;
+    position: fixed;
+    top: 50vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.8)
+}
+
+#death_message{
+    font-size: 100px;
+    margin-top: 30vh;
+    margin-bottom: 25px;
+}
+
+#username{
+    margin-right: 7px;
+}
+
+
+.button {
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #000;
+    background-color: #becbe0;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    font-family:"Comic Sans MS", cursive, sans-serif;
+  }
+  
+  .button:hover {background-color: #96a1b3}
+  
+  .button:active {
+    background-color: #7b8391;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  #play_button{
+      padding: 0px 5px 4px 5px;
+      font-size: 16px;
+  }
+
+#team1-score{
+    color: red;
+}
+#team2-score{
+    color: blue;
+}
