@@ -17,7 +17,7 @@ class Game{
         this.io = io;
 
         this.gameType = GAME_MODES[Math.floor(Math.random() * GAME_MODES.length)];
-        this.gameType = "CTF";
+        // this.gameType = "CTF";
 
         if(this.gameType === "CTF"){
             this.team1Count = 0;
@@ -731,11 +731,11 @@ class Game{
             }
         }
 
-        for (let i = 0; i < objects; i++) {
+        for (let i = 0; i < objects.length; i++) {
             if (objects[i].type === "tree") {
                 const x = objects[i].x;
                 const y = objects[i].y;
-                const r = objects[i].health / 5 * 5;
+                const r = objects[i].health / 5;
                 const body = new p2.Body({
                     mass: 0,
                     position: [x, y]

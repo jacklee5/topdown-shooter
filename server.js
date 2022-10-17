@@ -135,6 +135,6 @@ setInterval(() => {
     }
 }, 1000 / 60)
 
-http.listen(7777, "0.0.0.0", function () {
-    console.log('listening on *:80');
+http.listen(3000, function () {
+    console.log('listening on *:3000');
 });
