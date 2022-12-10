@@ -21,7 +21,7 @@
   "homepage": "https://github.com/jacklee5/sneksmash-2#readme",
   "dependencies": {
     "ejs": "^2.6.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "nodemon": "^1.19.1",
     "p2": "^0.7.1",
     "socket.io": "^2.2.0",
